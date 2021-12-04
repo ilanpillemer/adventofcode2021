@@ -37,46 +37,22 @@ type board struct {
 func (b board) String() string {
 	builder := strings.Builder{}
 	builder.WriteString("board: " + fmt.Sprint(b.id) + "\n")
-	for _, row := range b.srcRows {
-		builder.WriteString(fmt.Sprint(row) + "\n")
-	}
-	builder.WriteString("filled at: " + "\n")
-	for _, row := range b.rows {
-		builder.WriteString(fmt.Sprint(row) + "\n")
-	}
-	builder.WriteString("board: " + fmt.Sprint(b.id) + "\n")
-	for _, col := range b.cols {
-		builder.WriteString(fmt.Sprint(col) + "\n")
-	}
-
-	builder.WriteString(fmt.Sprintf("Best Row [%d], completed on turn [%d]\n", b.bestRow, b.bestRowTurn))
-	builder.WriteString(fmt.Sprintf("Best Col [%d], completed on turn [%d]\n", b.bestCol, b.bestColTurn))
-	builder.WriteString(fmt.Sprintf("Best Row [%d], completed on turn [%d]\n", b.worstRow, b.worstRowTurn))
-	builder.WriteString(fmt.Sprintf("Best Col [%d], completed on turn [%d]\n", b.worstCol, b.worstColTurn))
-	builder.WriteString(fmt.Sprintf("Best Turn, completed on turn [%d]\n", b.bestTurn))
-	fmt.Println("best for",
+	builder.WriteString(fmt.Sprintln("best for",
 		b.id, "-", b.unmarked, sum(b.unmarked),
 		"with piece", b.num[b.bestTurn],
 		"with score", b.num[b.bestTurn]*sum(b.unmarked),
-		"at turn", b.bestTurn)
-	builder.WriteString(fmt.Sprintf("Best Turn, completed on turn [%d]\n", b.bestTurn))
-	fmt.Println("worst for",
-		b.id, "-", b.worstUnmarked, sum(b.worstUnmarked),
-		"with piece", b.num[b.worstTurn],
-		"with score", b.num[b.worstTurn]*sum(b.worstUnmarked),
-		"at turn", b.worstTurn)
+		"at turn", b.bestTurn))
 
 	return builder.String()
 }
 
 func (b board) CreateCols() board {
 	//the best row is the minimum highest value per row
-	col0 := []int{-1, -1, -1, -1, -1}
-	col1 := []int{-1, -1, -1, -1, -1}
-	col2 := []int{-1, -1, -1, -1, -1}
-	col3 := []int{-1, -1, -1, -1, -1}
-	col4 := []int{-1, -1, -1, -1, -1}
-	cols := []col{col0, col1, col2, col3, col4}
+	cols := []col{}
+	for i := 0; i < 5; i++ {
+		cols = append(cols, make([]int, 5))
+	}
+
 	for i, row := range b.rows {
 		for j, square := range row {
 			cols[j][i] = square
@@ -100,40 +76,6 @@ func (b board) UpdateBestRow() board {
 	}
 	b.bestRowTurn = best
 	b.bestRow = bestRow
-	return b
-}
-
-func (b board) UpdateWorstRow() board {
-	//the best row is the highest highest value per row
-	worst := -1
-	worstRow := worst
-	for i, row := range b.rows {
-		//highest value
-		highest := max(row)
-		if highest > worst {
-			worst = highest
-			worstRow = i
-		}
-	}
-	b.worstRowTurn = worst
-	b.worstRow = worstRow
-	return b
-}
-
-func (b board) UpdateWorstCol() board {
-	//the best row is the highest highest value per row
-	worst := -1
-	worstCol := worst
-	for i, col := range b.cols {
-		//highest value
-		highest := max(col)
-		if highest > worst {
-			worst = highest
-			worstCol = i
-		}
-	}
-	b.worstColTurn = worst
-	b.worstCol = worstCol
 	return b
 }
 
@@ -174,18 +116,15 @@ func (b board) UpdateUnMarked() board {
 	for i, row := range b.rows {
 		for j, turn := range row {
 			if turn > b.bestTurn {
-				//fmt.Println(turn, ">", b.bestTurn, turn > b.bestTurn)
 				xs = append(xs, b.srcRows[i][j])
 			}
 		}
 	}
 	b.unmarked = xs
-	fmt.Println("--")
 	ys := []int{}
 	for i, row := range b.rows {
 		for j, turn := range row {
 			if turn > b.worstTurn {
-				fmt.Println(turn, ">", b.bestTurn, turn > b.bestTurn)
 				ys = append(ys, b.srcRows[i][j])
 			}
 		}
@@ -239,6 +178,7 @@ func main() {
 		b = b.UpdateUnMarked()
 		boards[k] = b
 	}
+	log.Println("WINNER!")
 	winner := board{}
 	winTurn := 2147483647
 	for _, b := range boards {
@@ -247,8 +187,8 @@ func main() {
 			winTurn = b.bestTurn
 		}
 	}
-	log.Println(winner.id, winner)
-
+	log.Println(winner)
+	log.Println("Loser!")
 	winTurn = -1
 	for _, b := range boards {
 		if b.bestTurn > winTurn {
@@ -256,7 +196,7 @@ func main() {
 			winTurn = b.bestTurn
 		}
 	}
-	log.Println(winner.id, winner)
+	log.Println(winner)
 }
 
 func reverse(pos map[int]int, line string) []int {

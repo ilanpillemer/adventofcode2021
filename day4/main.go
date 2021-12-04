@@ -13,25 +13,21 @@ type row []int
 type col []int
 
 type board struct {
-	id            int
-	bestTurn      int
-	bestRow       int
-	bestRowTurn   int
-	bestCol       int
-	bestColTurn   int
-	worstTurn     int
-	worstRow      int
-	worstRowTurn  int
-	worstCol      int
-	worstColTurn  int
-	rows          []row
-	srcRows       []row
-	cols          []col
-	srcCols       []col
-	unmarked      []int
-	worstUnmarked []int
-	pos           map[int]int
-	num           map[int]int
+	id          int
+	bestTurn    int
+	bestRow     int
+	bestRowTurn int
+	bestCol     int
+	bestColTurn int
+
+	rows     []row
+	srcRows  []row
+	cols     []col
+	srcCols  []col
+	unmarked []int
+
+	pos map[int]int
+	num map[int]int
 }
 
 func (b board) String() string {
@@ -85,10 +81,10 @@ func (b board) UpdateTurn() board {
 		b.bestTurn = b.bestRowTurn
 	}
 
-	b.worstTurn = b.worstColTurn
-	if b.worstTurn > b.worstRowTurn {
-		b.worstTurn = b.worstRowTurn
-	}
+	//	b.worstTurn = b.worstColTurn
+	//	if b.worstTurn > b.worstRowTurn {
+	//		b.worstTurn = b.worstRowTurn
+	//	}
 
 	return b
 }
@@ -121,15 +117,7 @@ func (b board) UpdateUnMarked() board {
 		}
 	}
 	b.unmarked = xs
-	ys := []int{}
-	for i, row := range b.rows {
-		for j, turn := range row {
-			if turn > b.worstTurn {
-				ys = append(ys, b.srcRows[i][j])
-			}
-		}
-	}
-	b.worstUnmarked = ys
+
 	return b
 }
 

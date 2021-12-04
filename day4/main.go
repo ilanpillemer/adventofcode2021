@@ -147,11 +147,6 @@ func main() {
 		boards[n] = current
 	}
 
-	best := board{}
-	turn := 0
-	bestRow := 0
-	value := 0
-	_, _, _, _ = best, turn, bestRow, value
 	for k, v := range boards {
 		b := board{}
 		b = v.CreateCols()
@@ -183,14 +178,12 @@ func main() {
 }
 
 func reverse(pos map[int]int, line string) []int {
-	ints := []int{}
-	for k, v := range pos {
-		ints = toInts(line)
-		for i, v := range ints {
-			ints[i] = pos[v]
-		}
-		_, _ = k, v
+
+	ints := toInts(line)
+	for i, v := range ints {
+		ints[i] = pos[v]
 	}
+
 	return ints
 }
 

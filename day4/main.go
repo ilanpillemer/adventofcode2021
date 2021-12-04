@@ -81,11 +81,6 @@ func (b board) UpdateTurn() board {
 		b.bestTurn = b.bestRowTurn
 	}
 
-	//	b.worstTurn = b.worstColTurn
-	//	if b.worstTurn > b.worstRowTurn {
-	//		b.worstTurn = b.worstRowTurn
-	//	}
-
 	return b
 }
 

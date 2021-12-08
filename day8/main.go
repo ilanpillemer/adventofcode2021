@@ -45,7 +45,6 @@ import (
 func main() {
 	log.Println("Day 8, part2")
 	log.Println("Calculating brute force style...")
-	uniques := map[string]int{}
 	//f, _ := os.Open("simple.txt")
 	//f, _ := os.Open("sample.txt")
 	f, _ := os.Open("input.txt")
@@ -68,7 +67,6 @@ func main() {
 		for _, wiring := range wirings {
 			wiring = SortString(wiring)
 			normalised = append(normalised, wiring)
-			uniques[wiring]++
 		}
 		sort.Strings(normalised)
 		hash := fmt.Sprint(normalised)

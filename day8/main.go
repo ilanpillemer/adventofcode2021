@@ -51,9 +51,7 @@ func main() {
 	scanner := bufio.NewScanner(f)
 	total := 0
 	fmt.Println("0")
-
 	bank := map[string]map[string]int{}
-
 	Perm([]rune("abcdefg"), func(a []rune) {
 		wiring, h := wire(string(a))
 		bank[h] = wiring
@@ -78,18 +76,14 @@ func main() {
 		}
 		sort.Strings(normalised)
 		hash := fmt.Sprint(normalised)
-		//actually only need to do this once, and have a bank of wiring to check
-
-
-			if wiring, ok := bank[hash]; ok {
-				value := wiring[words[0]]*1000 +
-					wiring[words[1]]*100 +
-					wiring[words[2]]*10 +
-					wiring[words[3]]
-				println("+", value)
-				total = total + value
-			}
-
+		if wiring, ok := bank[hash]; ok {
+			value := wiring[words[0]]*1000 +
+				wiring[words[1]]*100 +
+				wiring[words[2]]*10 +
+				wiring[words[3]]
+			println("+", value)
+			total = total + value
+		}
 
 	}
 	fmt.Println("================")

@@ -72,28 +72,7 @@ func main() {
 		}
 		sort.Strings(normalised)
 		hash := fmt.Sprint(normalised)
-		digits := map[int]string{}
-		digits[0] = "abcefg"
-		digits[1] = "cf"
-		digits[2] = "acdeg"
-		digits[3] = "acdfg"
-		digits[4] = "bcdf"
-		digits[5] = "abdfg"
-		digits[6] = "abdefg"
-		digits[7] = "acf"
-		digits[8] = "abcdefg"
-		digits[9] = "abcdfg"
-
-		ws := []string{}
-		for wx := range uniques {
-			ws = append(ws, wx)
-		}
-		_ = ws
-
-		counter := 0
-
 		Perm([]rune("abcdefg"), func(a []rune) {
-			counter++
 			wiring, wHash := wire(string(a))
 			if hash == wHash {
 				value := wiring[words[0]]*1000 +

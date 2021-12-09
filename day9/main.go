@@ -27,8 +27,6 @@ func main() {
 		//fmt.Println(line)
 		x = 0
 		for _, j := range line {
-			//log.Println(line)
-			//log.Println(string(j))
 			grid[image.Point{x, y}] = atoi(string(j))
 			width = max(width, x)
 			x++

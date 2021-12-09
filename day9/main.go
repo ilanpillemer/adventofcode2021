@@ -24,7 +24,6 @@ func main() {
 	y := 0
 	for scanner.Scan() {
 		line := scanner.Text()
-		//fmt.Println(line)
 		x = 0
 		for _, j := range line {
 			grid[image.Point{x, y}] = atoi(string(j))

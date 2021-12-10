@@ -38,7 +38,7 @@ func main() {
 	part2 := []int{}
 	for scanner.Scan() {
 		line := scanner.Text()
-		if ch, ok, rem := illegal(line, []byte{}); ok {
+		if ch, ok, rem := recurse(line, []byte{}); ok {
 			total = total + score[ch]
 		} else {
 			lscore := int(0)
@@ -56,16 +56,16 @@ func main() {
 	fmt.Println(part2[len(part2)/2])
 }
 
-func illegal(str string, seen []byte) (byte, bool, []byte) {
+func recurse(str string, seen []byte) (byte, bool, []byte) {
 	if len(str) == 0 {
 		return 0, false, seen
 	}
 	if _, ok := matches[str[0]]; ok {
 		seen = append(seen, str[0])
-		return illegal(str[1:], seen)
+		return recurse(str[1:], seen)
 	} else {
 		if str[0] == matches[seen[len(seen)-1]] {
-			return illegal(str[1:], seen[:len(seen)-1])
+			return recurse(str[1:], seen[:len(seen)-1])
 		} else {
 			return str[0], true, nil
 		}

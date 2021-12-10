@@ -43,10 +43,8 @@ func main() {
 		} else {
 			lscore := int(0)
 			for i := len(rem) - 1; i > -1; i-- {
-
 				lscore = lscore * 5
 				lscore = lscore + score2[rem[i]]
-
 			}
 			part2 = append(part2, lscore)
 		}

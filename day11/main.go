@@ -168,9 +168,9 @@ func flash(grid map[image.Point]int, flashed map[image.Point]bool) (map[image.Po
 			// for each point in grid
 			// should it maybe flash?
 			// it should flash if its value is zero and it has not flashed before
-			flash1 := grid[image.Pt(j, i)] > 9          // it could flash
+			kapow := grid[image.Pt(j, i)] > 9           // it could flash
 			if _, ok := flashed[image.Pt(j, i)]; !ok && // has not flashed before
-				flash1 {
+				kapow {
 				isDark = false
 				// a flash has occured
 				ns := neighbours(image.Point{j, i})

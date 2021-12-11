@@ -156,10 +156,7 @@ func incNeighbours(grid map[image.Point]int) map[image.Point]int {
 }
 
 func flash(grid map[image.Point]int, flashed map[image.Point]bool) (map[image.Point]int, int) {
-
-	x := width
-	y := height
-
+	x, y := width, height
 	// next iteration of grid
 	variant := map[image.Point]int{}
 	for k, v := range grid { // initial state of variant
@@ -185,10 +182,8 @@ func flash(grid map[image.Point]int, flashed map[image.Point]bool) (map[image.Po
 				}
 				flashed[image.Pt(j, i)] = true
 			}
-
 		}
 	}
-
 	if isDark {
 		// all fish that flashed are now very tired
 		for pt := range flashed {

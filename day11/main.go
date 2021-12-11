@@ -167,7 +167,7 @@ func flash(grid map[image.Point]int, flashed map[image.Point]bool) (map[image.Po
 		for j := 0; j < x+1; j++ {
 			// for each point in grid
 			// should it maybe flash?
-			// it should flash if its value is zero and it has not flashed before
+			// it should flash if its value is above 9 and it has not flashed before
 			kapow := grid[image.Pt(j, i)] > 9           // it could flash
 			if _, ok := flashed[image.Pt(j, i)]; !ok && // has not flashed before
 				kapow {

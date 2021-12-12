@@ -26,19 +26,14 @@ func main() {
 }
 
 func paths(x string, seen map[string]int, acc []string) {
-
 	if x == "end" {
-		//	log.Println(acc)
 		total = append(total, acc)
-
 	}
 	for _, edge := range edges[x] {
-
 		_, ok := seen[edge]
 		if ok {
 			ok = override(edge, seen)
 		}
-
 		if !ok {
 			nseen := deepcopy(seen)
 			nseen = seeEdge(nseen, edge)

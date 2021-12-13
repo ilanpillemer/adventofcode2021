@@ -65,7 +65,6 @@ func load(fname string) {
 			grid[image.Pt(x, y)] = 1
 		}
 	}
-
 }
 
 func foldy(fy int) {
@@ -82,7 +81,6 @@ func foldy(fy int) {
 		},
 		func() {},
 	)
-
 }
 
 func foldx(fx int) {
@@ -99,7 +97,6 @@ func foldx(fx int) {
 		},
 		func() {},
 	)
-
 }
 
 func atoi(str string) int {

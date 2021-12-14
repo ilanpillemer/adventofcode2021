@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"sort"
 	"strings"
@@ -11,27 +10,22 @@ import (
 
 var rules = map[string]string{}
 var tmpl string
-var pairs = map[string]int{}
+var pairs = map[string]int64{}
 
 func main() {
-	//	load("sample.txt")
+	//load("sample.txt")
 	load("input.txt")
 	fmt.Println(tmpl)
-	fmt.Println(rules)
-	for i := 0; i < 10; i++ {
-		tmpl = step(tmpl)
-		log.Println(len(tmpl))
-		quantities := counts(tmpl)
-		sort.Ints(quantities)
-		log.Println(quantities)
+	pairs = start(pairs, tmpl)
+	fmt.Println(pairs)
+	for i := 0; i < 40; i++ {
+		pairs = step(pairs)
+
 	}
-	log.Println(len(tmpl))
-	quantities := counts(tmpl)
-	sort.Ints(quantities)
-	log.Println(quantities)
-	p1 := quantities[len(quantities)-1] - quantities[0]
-	fmt.Println("**** part 1 ****")
-	fmt.Println(p1)
+	xs := counts2(pairs, tmpl[len(tmpl)-1])
+
+	sort.Slice(xs, func(i, j int) bool { return xs[i] < xs[j] })
+	fmt.Println(xs[len(xs)-1] - xs[0])
 }
 
 func load(fname string) {
@@ -49,14 +43,22 @@ func load(fname string) {
 	}
 }
 
-func step(str string) string {
-	var sb strings.Builder
+func start(in map[string]int64, str string) map[string]int64 {
 	for i := 0; i < len(str)-1; i++ {
-		//	fmt.Println(str[i : i+2])
-		sb.WriteString(str[i:i+1] + rules[str[i:i+2]])
+		in[str[i:i+2]]++
 	}
-	sb.WriteString(str[len(str)-1:])
-	return sb.String()
+	return in
+}
+
+func step(in map[string]int64) map[string]int64 {
+	out := map[string]int64{}
+	for k, v := range in {
+		if v != 0 {
+			out[k[:1]+rules[k]] += v
+			out[rules[k]+k[1:]] += v
+		}
+	}
+	return out
 }
 
 func counts(str string) []int {
@@ -69,4 +71,21 @@ func counts(str string) []int {
 		counts = append(counts, count)
 	}
 	return counts
+}
+
+func counts2(in map[string]int64, last byte) []int64 {
+	xs := []int64{}
+	cx := map[byte]int64{}
+	for k, v := range in {
+		if v != 0 {
+			cx[k[0]] = cx[k[0]] + v
+		}
+	}
+	cx[last]++
+	total := int64(0)
+	for _, v := range cx {
+		xs = append(xs, v)
+		total += v
+	}
+	return xs
 }

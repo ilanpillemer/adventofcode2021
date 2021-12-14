@@ -22,7 +22,7 @@ func main() {
 		pairs = step(pairs)
 
 	}
-	xs := counts2(pairs, tmpl[len(tmpl)-1])
+	xs := counts(pairs, tmpl[len(tmpl)-1])
 
 	sort.Slice(xs, func(i, j int) bool { return xs[i] < xs[j] })
 	fmt.Println(xs[len(xs)-1] - xs[0])
@@ -61,19 +61,7 @@ func step(in map[string]int64) map[string]int64 {
 	return out
 }
 
-func counts(str string) []int {
-	elems := map[rune]int{}
-	counts := []int{}
-	for _, ch := range str {
-		elems[ch]++
-	}
-	for _, count := range elems {
-		counts = append(counts, count)
-	}
-	return counts
-}
-
-func counts2(in map[string]int64, last byte) []int64 {
+func counts(in map[string]int64, last byte) []int64 {
 	xs := []int64{}
 	cx := map[byte]int64{}
 	for k, v := range in {

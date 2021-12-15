@@ -58,12 +58,9 @@ func load(fname string) {
 		weights[k] = 2147483647
 		unvisited[k] = 1
 	}
-	log.Println("width", width)
 	width = (width * 5) - 1
 	height = width
-	log.Println(width, height)
 	pq = PriorityQueue{}
-	log.Println(pq)
 	item := &Item{
 		value:    image.Pt(0, 0),
 		priority: 0,

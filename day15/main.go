@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"container/heap"
 	"fmt"
 	"image"
 	"log"
@@ -15,16 +16,21 @@ var height = 0
 var distances = map[image.Point]int{}
 var weights = map[image.Point]int{}
 var unvisited = map[image.Point]int{}
+var count = 0
+var pq PriorityQueue
 
-// 870 863
 func main() {
-	//load("sample.txt")
+	//	load("sample.txt")
 	load("input.txt")
-	//display(distances)
-	//display(unvisited)
 	assign()
-	//display(weights)
 	log.Println(weights[image.Pt(width, height)])
+}
+
+func wrap(val int, mod int) int {
+	if val < mod {
+		return val
+	}
+	return (val % mod) + 1
 }
 
 func load(fname string) {
@@ -35,21 +41,45 @@ func load(fname string) {
 	for scanner.Scan() {
 		line := scanner.Text()
 		x = 0
+		width = len(line)
 		for _, j := range line {
-			distances[image.Point{x, y}] = atoi(string(j))
-			weights[image.Point{x, y}] = 2147483647
-			unvisited[image.Point{x, y}] = 1
-			width = max(width, x)
+			for k := 0; k < width-1; k++ {
+				distances[image.Pt(x+(k*width), y)] = wrap((atoi(string(j)) + k), 10)
+				distances[image.Pt(x+(k*width), y+width)] = wrap((atoi(string(j)) + (k + 1)), 10)
+				distances[image.Pt(x+(k*width), y+(2*width))] = wrap((atoi(string(j)) + (k + 2)), 10)
+				distances[image.Pt(x+(k*width), y+(3*width))] = wrap((atoi(string(j)) + (k + 3)), 10)
+				distances[image.Pt(x+(k*width), y+(4*width))] = wrap((atoi(string(j)) + (k + 4)), 10)
+			}
 			x++
 		}
-		height = max(height, y)
 		y++
 	}
+	for k := range distances {
+		weights[k] = 2147483647
+		unvisited[k] = 1
+	}
+	log.Println("width", width)
+	width = (width * 5) - 1
+	height = width
+	log.Println(width, height)
+	pq = PriorityQueue{}
+	log.Println(pq)
+	item := &Item{
+		value:    image.Pt(0, 0),
+		priority: 0,
+	}
+
+	heap.Init(&pq)
+	heap.Push(&pq, item)
 }
 
 func assign() {
 	start := image.Pt(0, 0)
-
+	item := &Item{
+		value:    start,
+		priority: 0,
+	}
+	heap.Push(&pq, item)
 	weights[start] = 0
 	process(start)
 
@@ -64,24 +94,16 @@ func assign() {
 }
 
 func getNextNode() image.Point {
+	item := heap.Pop(&pq).(*Item)
+	return item.value
 
-	weight := 2147483647
-	var pt image.Point
-	//display(unvisited)
-	for k, v := range weights {
-		if _, ok := unvisited[k]; ok {
-			if v < weight {
-				weight = v
-				pt = k
-			}
-		}
-	}
-
-	return pt
 }
 
 func finished() bool {
-	return len(unvisited) == 0
+	if _, ok := unvisited[image.Pt(width, height)]; !ok {
+		return true
+	}
+	return false
 }
 
 func process(curr image.Point) {
@@ -93,10 +115,16 @@ func process(curr image.Point) {
 			proposed := myWeight + distances[n]
 			if proposed < weight {
 				weights[n] = proposed
+				item := &Item{
+					value:    n,
+					priority: proposed,
+				}
+				heap.Push(&pq, item)
 			}
 		}
 	}
 	delete(unvisited, curr)
+	count++
 }
 
 func neighbours(pt image.Point) []image.Point {
@@ -137,10 +165,6 @@ func display(grid map[image.Point]int) {
 	apply(grid,
 		func(x image.Point) {
 			pt := grid[x]
-			//ch := "."
-			//if pt == 1 {
-			//	ch = "#"
-			//}
 			fmt.Print(pt)
 		},
 		func() { fmt.Println() },
@@ -173,4 +197,51 @@ func deepcopy(in map[image.Point]int) map[image.Point]int {
 		out[k] = v
 	}
 	return out
+}
+
+// An Item is something we manage in a priority queue.
+type Item struct {
+	value    image.Point // The value of the item; arbitrary.
+	priority int         // The priority of the item in the queue.
+	// The index is needed by update and is maintained by the heap.Interface methods.
+	index int // The index of the item in the heap.
+}
+
+// A PriorityQueue implements heap.Interface and holds Items.
+type PriorityQueue []*Item
+
+func (pq PriorityQueue) Len() int { return len(pq) }
+
+func (pq PriorityQueue) Less(i, j int) bool {
+	return pq[i].priority < pq[j].priority
+}
+
+func (pq PriorityQueue) Swap(i, j int) {
+	pq[i], pq[j] = pq[j], pq[i]
+	pq[i].index = i
+	pq[j].index = j
+}
+
+func (pq *PriorityQueue) Push(x interface{}) {
+	n := len(*pq)
+	item := x.(*Item)
+	item.index = n
+	*pq = append(*pq, item)
+}
+
+func (pq *PriorityQueue) Pop() interface{} {
+	old := *pq
+	n := len(old)
+	item := old[n-1]
+	old[n-1] = nil  // avoid memory leak
+	item.index = -1 // for safety
+	*pq = old[0 : n-1]
+	return item
+}
+
+// update modifies the priority and value of an Item in the queue.
+func (pq *PriorityQueue) update(item *Item, value image.Point, priority int) {
+	item.value = value
+	item.priority = priority
+	heap.Fix(pq, item.index)
 }

@@ -8,26 +8,45 @@ import (
 
 var input = "D2FE28"
 var input2 = "38006F45291200"
+var input3 = "EE00D40C823060"
+var input4 = "8A004A801A8002F478"
+var input5 = "8A004A801A8002F478"
+var input6 = "620080001611562C8802118E34"
+var input7 = "C0015000016115A2E0802F182340"
+var input8 = "A0016C880162017C3686B18A3D4780"
 var state = "V"
 var current int
 var program = ""
 
 func main() {
 	fmt.Println("day16")
-	program = load(input2)
+	program = load(part1)
+	//program = load(input8)
 	fmt.Println(program)
 
 	//parse
+	fmt.Println("starting")
+	total := int64(0)
 	for {
 
 		token, symbol := nextToken()
-		fmt.Println(symbol, token)
+		//		fmt.Println(symbol, token)
+		if symbol == "V" {
+
+			version, err := strconv.ParseInt(token, 2, 64)
+			if err != nil {
+				fmt.Println(err)
+			}
+			fmt.Println(token, version)
+			total = total + version
+		}
 
 		if state == "EOF" {
 			break
 		}
 	}
-
+	fmt.Println(total)
+	fmt.Println("\nfinished")
 }
 func load(input string) string {
 	sb := strings.Builder{}
@@ -42,11 +61,15 @@ func nextToken() (string, string) {
 	token := ""
 	symbol := state
 	switch state {
+	case "LINPACKETS":
+		token = program[current : current+11]
+		current = current + 11
+		state = "V"
 	case "LINBITS":
 		token = program[current : current+15]
 		current = current + 15
-		state = "SUBPACKET"
-	case "OP":
+		state = "V"
+	case "I":
 		token = program[current : current+1]
 		current = current + 1
 		switch token {
@@ -57,17 +80,22 @@ func nextToken() (string, string) {
 		default:
 			panic(symbol)
 		}
-	case "LC":
+	case "A":
 		token = program[current : current+5]
 		current = current + 5
 		if token[0] == '0' {
-			rest := program[current:]
-			if atoi(rest) == 0 {
-				state = "EOF"
-			}
+			state = "V"
+		} else {
+			state = "A"
 		}
-
+		token = token[1:]
 	case "V": //version
+		rest := program[current:]
+		if len(rest) < 16 && atoi(rest) == 0 {
+			symbol = "EOF"
+			state = "EOF"
+			break
+		}
 		token = program[current : current+3]
 		current = current + 3
 		state = "T"
@@ -76,9 +104,9 @@ func nextToken() (string, string) {
 		current = current + 3
 		switch token {
 		case "100":
-			state = "LC" // In Literal keep reading
+			state = "A" // In Literal keep reading
 		default:
-			state = "OP"
+			state = "I"
 		}
 
 	default:

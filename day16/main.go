@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 )
@@ -54,22 +53,6 @@ func (n node) String() string {
 func main() {
 	fmt.Println("day16")
 	program = load(part1)
-	program = load(input9)
-	program = load(part1)
-	program = load(sum)
-	program = load(product)
-	program = load(part1)
-	//program = load(minimum)
-	//program = load(maximum)
-	//program = load(lessthan)
-	//program = load(greaterthan)
-	//program = load(equals)
-	//program = load(subequals)
-	//	program = load(input) // 2021
-	//	program = load(input2)
-	//	program = load(part1)
-	//	fmt.Println(program)
-
 	//parse
 	fmt.Println("starting")
 	packets := getPacketStream()
@@ -83,9 +66,7 @@ func main() {
 	}
 	root := &node{}
 	ast, _ := generateAST(root, packets[1:])
-	log.Println(ast)
-	//answer := Eval(packets)
-
+	//log.Println(ast)
 	fmt.Println("****")
 	fmt.Println("answer", Eval(ast))
 	fmt.Println("****")
@@ -145,7 +126,6 @@ func Eval(current *node) int64 {
 }
 
 func generateAST(parent *node, packets []Packet) (*node, []Packet) {
-	log.Println(parent)
 	packet := packets[0]
 	current := &node{}
 	current.parent = parent
@@ -220,11 +200,8 @@ func secondPass(packets []Packet) []Packet {
 
 	for i, packet := range packets {
 		if packet.typ == "LIT" {
-
 			j, _ := strconv.ParseInt(packet.val, 2, 64)
 			packet.number = j
-			//	log.Print(packet.val, " --> ", packet.number)
-			//packet.val = ""
 			packets[i] = packet
 		}
 
@@ -283,7 +260,6 @@ func getPacketStream() []Packet {
 	for {
 
 		token, symbol, counter := nextToken()
-		//	fmt.Println(counter, ":", symbol, token)
 		switch symbol {
 		case "V":
 			packets = append(packets, packet)
@@ -414,9 +390,7 @@ func atoi(str string) int {
 
 func conv(str rune) string {
 	c, _ := strconv.ParseInt(string(str), 16, 64)
-	//b := strconv.FormatInt(c, 2)
 	b := fmt.Sprintf("%04b", c)
-	//fmt.Println("..", b)
 	return b
 }
 

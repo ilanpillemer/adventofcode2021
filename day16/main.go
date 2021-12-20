@@ -197,23 +197,6 @@ func (p Packet) distantSubPackets(packets []Packet) int64 {
 	panic(packets)
 }
 
-func (p Packet) inc(dist int64, packets []Packet) int64 { // next immediate package
-	arg := packets[dist]
-	if arg.typ == "LIT" {
-		return 1
-	}
-	if true {
-		return arg.args + 1
-	}
-	px := p.npackets
-	log.Println(p.typ, arg.typ)
-	log.Println(p.typ, p)
-	log.Println(arg.typ, arg)
-	log.Println(p.npackets, arg.npackets, arg.args)
-	log.Println(p)
-	return px - arg.npackets
-}
-
 func firstPass(packets []Packet) []Packet {
 
 	for i, packet := range packets {

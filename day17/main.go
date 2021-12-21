@@ -15,20 +15,24 @@ func main() {
 	// sample
 	// target area: x=20..30, y=-10..-5
 
-//	lowesty = -10
-//	target := image.Rect(20, -10, 30, -5)
-
+	//lowesty = -10
+	//	target := image.Rect(20, -10, 30, -5)
+	//target := image.Rect(20, -10, 31, -4)
 	// input
 	//target area: x=236..262, y=-78..-58
 	lowesty = -78
-	target := image.Rect(236, -78, 262, -58)
-	maxy := abs(lowesty) * 2
-	maxx := abs(lowesty) * 2
+	//	target := image.Rect(236, -78, 262, -58)
+	target := image.Rect(236, -78, 263, -57)
+	//	maxy := abs(lowesty) * 100
+	maxx := abs(lowesty) * 100
 	highest := 0
+	count := 0
 	for x := 0; x < maxx; x++ {
-		for y := 0; y < maxy; y++ {
+		for y := -300; y < 300; y++ {
 			high, ok := fire(image.Pt(0, 0), image.Pt(x, y), target)
 			if ok {
+				//	log.Println(image.Pt(x, y))
+				count++
 				if high > highest {
 					highest = high
 				}
@@ -37,6 +41,7 @@ func main() {
 
 	}
 	fmt.Println("highest:", highest)
+	fmt.Println("count:", count)
 	log.Println("done")
 
 }

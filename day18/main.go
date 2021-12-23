@@ -115,6 +115,10 @@ func (x *sn) Root() *sn {
 	return x.parent.Root()
 }
 
+func (x *sn) Start() *sn {
+	return x.ordered[0]
+}
+
 func (x *sn) Reduce() {
 	before := fmt.Sprint(x)
 	log.Println(x.LeftMost(4))
@@ -162,54 +166,31 @@ func (x *sn) Explode() {
 }
 
 func (x *sn) Split() bool {
-	//log.Println("split", x)
+	x.Root().Decorate(true)
+	node := x.Start()
 
-	if x.left != nil && x.left.isLeaf && x.left.val > 9 {
-		newLNode := &sn{isLeaf: true}
-		newLNode.val = (x.left.val) / 2
-		newLNode.parent = x.left
-		x.left.left = newLNode
+	for node != nil {
 
-		newRNode := &sn{isLeaf: true}
-		newRNode.val = (x.left.val + 1) / 2
-		newRNode.parent = x.left
-		x.left.right = newRNode
+		if node.val > 9 {
+			newLNode := &sn{isLeaf: true}
+			newLNode.val = (node.val) / 2
+			newLNode.parent = node
 
-		x.left.val = 0
-		x.left.isLeaf = false
-		return true
-	}
+			node.left = newLNode
 
-	if x.right != nil && x.right.isLeaf && x.right.val > 9 {
-		newLNode := &sn{isLeaf: true}
-		newLNode.val = (x.right.val) / 2
-		newLNode.parent = x.right
+			newRNode := &sn{isLeaf: true}
+			newRNode.val = (node.val + 1) / 2
+			newRNode.parent = node
+			node.right = newRNode
 
-		x.right.left = newLNode
-
-		newRNode := &sn{isLeaf: true}
-		newRNode.val = (x.right.val + 1) / 2
-		newRNode.parent = x.right
-		x.right.right = newRNode
-
-		x.right.val = 0
-		x.right.isLeaf = false
-		return true
-	}
-
-	if x.left != nil {
-		checkLeft := x.left.Split()
-		if checkLeft {
-			return checkLeft
+			node.val = 0
+			node.isLeaf = false
+			return true
 		}
+		node = node.after
+
 	}
 
-	if x.right != nil {
-		checkRight := x.right.Split()
-		if checkRight {
-			return checkRight
-		}
-	}
 	return false
 }
 
@@ -222,8 +203,8 @@ func main() {
 	//runReduceTest()
 	//runReduceL1()
 	//runReduceL2()
-	runReduceLN()
-	os.Exit(0)
+	//runReduceLN()
+	//os.Exit(0)
 	fname := "tiny1.txt"
 	fname = "tiny2.txt"
 	fname = "tiny3.txt"

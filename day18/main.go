@@ -38,12 +38,9 @@ func Add(left, right *sn) *sn {
 	root := &sn{}
 	root.left = left
 	root.right = right
-
 	left.parent = root
 	right.parent = root
-
 	return root
-
 }
 
 //decorate adds pointers to before and after as explode needs to know this
@@ -55,7 +52,6 @@ func (x *sn) Decorate(start bool) {
 	if start {
 		ordered = []*sn{}
 	}
-
 	switch {
 	case x.isLeaf:
 		ordered = append(ordered, x)
@@ -85,12 +81,10 @@ func (x *sn) Decorate(start bool) {
 }
 
 func (x *sn) LeftMost(level int) *sn { //only if nested more than four!
-
 	if x.left.isLeaf && x.right.isLeaf && x.Height() >= level {
 		//log.Println("LeftMost", x)
 		return x
 	}
-
 	if !x.left.isLeaf {
 		checkLeft := x.left.LeftMost(level)
 		if checkLeft != nil {
@@ -128,7 +122,6 @@ func (x *sn) Reduce() {
 	if before != after {
 		x.Reduce()
 	}
-
 }
 
 func (x *sn) Explode() {
@@ -136,51 +129,38 @@ func (x *sn) Explode() {
 		return
 	}
 	x.Root().Decorate(true)
-
 	if x.left.before != nil {
 		x.left.before.val += x.left.val
 	}
 	if x.right.after != nil {
 		x.right.after.val += x.right.val
 	}
-
 	x.val = 0
-
-	x.left.parent = nil
 	x.left = nil
-
-	x.right.parent = nil
 	x.right = nil
-
 	x.isLeaf = true
 }
 
 func (x *sn) Split() bool {
 	x.Root().Decorate(true)
 	node := x.Start()
-
 	for node != nil {
-
 		if node.val > 9 {
 			newLNode := &sn{isLeaf: true}
 			newLNode.val = (node.val) / 2
 			newLNode.parent = node
-
 			node.left = newLNode
 
 			newRNode := &sn{isLeaf: true}
 			newRNode.val = (node.val + 1) / 2
 			newRNode.parent = node
 			node.right = newRNode
-
 			node.val = 0
 			node.isLeaf = false
 			return true
 		}
 		node = node.after
-
 	}
-
 	return false
 }
 func (x *sn) Magnitude() int64 {
@@ -191,12 +171,14 @@ func (x *sn) Magnitude() int64 {
 }
 
 func main() {
+	part1()
+	part2()
+}
 
-	//fname := "tiny.txt"
+func part1() {
 	fname := "input.txt"
 	f, _ := os.Open(fname)
 	scanner := bufio.NewScanner(f)
-
 	snailfish := &sn{}
 	first := true
 	log.Println("starting")
@@ -209,16 +191,44 @@ func main() {
 		}
 		next := &sn{}
 		NewSn(line, next)
-
 		sum := Add(snailfish, next)
 		sum.Reduce()
-
 		snailfish = sum
 	}
 	fmt.Println(snailfish.Root().Magnitude())
-
+}
+func part2() {
+	fname := "input.txt"
+	f, _ := os.Open(fname)
+	scanner := bufio.NewScanner(f)
+	numbers := []string{}
+	for scanner.Scan() {
+		line := scanner.Text()
+		numbers = append(numbers, line)
+	}
+	var best int64
+	for _, n1 := range numbers {
+		for _, n2 := range numbers {
+			if n1 != n2 {
+				sn1, sn2 := &sn{}, &sn{}
+				NewSn(n1, sn1)
+				NewSn(n2, sn2)
+				combined := Add(sn1, sn2)
+				combined.Reduce()
+				value := combined.Magnitude()
+				best = max(best, value)
+			}
+		}
+	}
+	fmt.Println(best)
 }
 
+func max(x, y int64) int64 {
+	if x > y {
+		return x
+	}
+	return y
+}
 func NewSn(str string, node *sn) {
 	if len(str) < 2 {
 		return
@@ -242,5 +252,4 @@ func NewSn(str string, node *sn) {
 		node.val = int(c - '0')
 		NewSn(str[1:], node.parent)
 	}
-
 }

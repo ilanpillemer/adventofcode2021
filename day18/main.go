@@ -35,7 +35,6 @@ func (x *sn) Height() int {
 }
 
 func Add(left, right *sn) *sn {
-	//log.Println("adding", left, right)
 	root := &sn{}
 	root.left = left
 	root.right = right
@@ -82,7 +81,6 @@ func (x *sn) Decorate(start bool) {
 				ordered[i].before = ordered[i-1]
 			}
 		}
-		//log.Println("ordered", x.ordered)
 	}
 }
 
@@ -120,24 +118,16 @@ func (x *sn) Start() *sn {
 }
 
 func (x *sn) Reduce() {
-	before := fmt.Sprint(x)
-	log.Println(x.LeftMost(4))
 	x.LeftMost(4).Explode()
-	after := fmt.Sprint(x)
 	if x.LeftMost(4) != nil {
-		log.Println("       : ", before)
-		log.Println("explode: ", after)
 		x.Reduce()
 	}
-	before = fmt.Sprint(x)
+	before := fmt.Sprint(x)
 	x.Split()
-	after = fmt.Sprint(x)
+	after := fmt.Sprint(x)
 	if before != after {
-		log.Println("       : ", before)
-		log.Println("split  : ", after)
 		x.Reduce()
 	}
-	//fmt.Println(after)
 
 }
 
@@ -200,22 +190,10 @@ func (x *sn) Magnitude() int64 {
 	return (3 * x.left.Magnitude()) + (2 * x.right.Magnitude())
 }
 
-//var ltest = "[[[[5,11],[13,0]],[[8,[7,7]],[[7,9],[5,0]]]],[[2,[[0,8],[3,4]]],[[[6,7],1],[7,[1,6]]]]]"
-
 func main() {
 
-	//runTests()
-	//runSeqTest()
-	//runReduceTest()
-	//runReduceL1()
-	//runReduceL2()
-	//runReduceLN()
-	//os.Exit(0)
-	fname := "tiny1.txt"
-	fname = "tiny2.txt"
-	fname = "tiny3.txt"
-	fname = "tiny.txt"
-	fname = "input.txt"
+	//fname := "tiny.txt"
+	fname := "input.txt"
 	f, _ := os.Open(fname)
 	scanner := bufio.NewScanner(f)
 
@@ -229,179 +207,15 @@ func main() {
 			first = false
 			continue
 		}
-
 		next := &sn{}
-
 		NewSn(line, next)
-		log.Println(" ", snailfish)
-		log.Println("+", next)
-		sum := Add(snailfish, next)
 
+		sum := Add(snailfish, next)
 		sum.Reduce()
-		log.Println("=", sum)
-		fmt.Println("########################")
-		fmt.Println(snailfish.Root().Magnitude())
-		fmt.Println("########################")
-		//fmt.Println(sum)
+
 		snailfish = sum
 	}
-
-}
-
-func runReduceL1() {
-	l := "[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]"
-	r := "[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]"
-	left := &sn{}
-	right := &sn{}
-	NewSn(l, left)
-	NewSn(r, right)
-	fmt.Println("  ", l)
-	fmt.Println("+ ", r)
-
-	combined := Add(left, right)
-	fmt.Println("=", combined)
-	fmt.Println("Left Most", combined.LeftMost(4))
-	combined.Reduce()
-	fmt.Println("=", combined)
-	fmt.Println(combined)
-}
-
-func runReduceL2() {
-	l := "[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]"
-	r := "[[2,[[0,8],[3,4]]],[[[6,7],1],[7,[1,6]]]]"
-	left := &sn{}
-	right := &sn{}
-	NewSn(l, left)
-	NewSn(r, right)
-	fmt.Println("  ", l)
-	fmt.Println("+ ", r)
-
-	combined := Add(left, right)
-	fmt.Println("=", combined)
-	fmt.Println("Left Most", combined.LeftMost(4))
-	combined.Reduce()
-	fmt.Println("=", combined)
-	fmt.Println(combined)
-
-}
-
-func runReduceLN() {
-
-	l := "[[[[7,0],[7,7]],[[7,7],[7,8]]],[[[7,7],[8,8]],[[7,7],[8,7]]]]"
-	r := "[7,[5,[[3,8],[1,4]]]]"
-	left := &sn{}
-	right := &sn{}
-	NewSn(l, left)
-	NewSn(r, right)
-	fmt.Println("  ", l)
-	fmt.Println("+ ", r)
-
-	combined := Add(left, right)
-	fmt.Println("=", combined)
-	fmt.Println("Left Most", combined.LeftMost(4))
-	combined.Reduce()
-	fmt.Println("=", combined)
-	fmt.Println(combined)
-	want := "[[[[7,7],[7,8]],[[9,5],[8,7]]],[[[6,8],[0,8]],[[9,9],[9,0]]]]"
-	if want != combined.String() {
-		fmt.Printf("want [%s]\ngot  [%s]\n", want, combined)
-	}
-
-}
-
-func runReduceTest() {
-	l := "[[[[4,3],4],4],[7,[[8,4],9]]]"
-	r := "[1,1]"
-	left := &sn{}
-	right := &sn{}
-	NewSn(l, left)
-	NewSn(r, right)
-	combined := Add(left, right)
-	combined.Reduce()
-	fmt.Println(combined)
-}
-
-func runSeqTest() {
-	l := "[[[[4,3],4],4],[7,[[8,4],9]]]"
-	r := "[1,1]"
-	left := &sn{}
-	right := &sn{}
-	NewSn(l, left)
-	NewSn(r, right)
-
-	combined := Add(left, right)
-	fmt.Println("after addition", combined)
-	combined.LeftMost(4).Explode()
-	fmt.Println("after explode", combined)
-	combined.LeftMost(4).Explode()
-	fmt.Println("after explode", combined)
-	combined.Split()
-	fmt.Println("after split", combined)
-	combined.Split()
-	fmt.Println("after split", combined)
-	combined.LeftMost(4).Explode()
-	fmt.Println("after explode", combined)
-}
-
-func runTests() {
-
-	//runTest("test1", "[[[[1,3],[5,3]],[[1,3],[8,7]]],[[[4,9],[6,9]],[[8,2],[7,3]]]]", "")
-
-	runTest("test2", "[7,[6,[5,[4,[3,2]]]]]", "[7,[6,[5,[7,0]]]]")
-	runTest("test3", "[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]", "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]") // hmmm
-	runTest("test4", "[[[[[9,8],1],2],3],4]", "[[[[0,9],2],3],4]")
-	runTest("test5", "[[6,[5,[4,[3,2]]]],1]", "[[6,[5,[7,0]]],3]")
-	runTest("test6", "[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]", "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]")
-	runTest("test7", "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]", "[[3,[2,[8,0]]],[9,[5,[7,0]]]]")
-	runTest("one", "[1,2]", "[1,2]")
-	runTest("two", "[[1,2],3]", "[[1,2],3]")
-	//	runSplitTest("one", "[[[[0,7],4],[15,[0,13]]],[1,1]]")
-}
-
-func runTest(name string, test string, want string) {
-	fmt.Println("**********")
-	fmt.Println(name, test)
-	fmt.Println("**********")
-
-	root := &sn{}
-	NewSn(test, root)
-	result := fmt.Sprint(root)
-
-	if result != test {
-		panic("tree failed to build")
-	}
-	log.Printf("%s -> %s\n", test, root)
-	fmt.Println("**********")
-	fmt.Println("left most", root.LeftMost(4))
-	fmt.Println("**********")
-	root.LeftMost(4).Explode()
-	fmt.Println("after left mode explode", root)
-	if fmt.Sprint(root) != want {
-		panic(fmt.Sprintf("want: %s, got :%s", want, root))
-	}
-	fmt.Println(test, "-->", root)
-	fmt.Println("**********")
-
-}
-
-func runSplitTest(name string, test string) {
-	fmt.Println("**********")
-	fmt.Println(name)
-	fmt.Println("**********")
-
-	root := &sn{}
-	NewSn(test, root)
-	result := fmt.Sprint(root)
-
-	if result != test {
-		log.Println("oops", result)
-		panic("tree failed to build")
-	}
-	log.Printf("%s -> %s\n", test, root)
-	fmt.Println("**********")
-	fmt.Println("**********")
-	root.Split()
-	fmt.Println("after Split explode", root)
+	fmt.Println(snailfish.Root().Magnitude())
 
 }
 

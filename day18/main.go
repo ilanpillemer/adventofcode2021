@@ -193,6 +193,12 @@ func (x *sn) Split() bool {
 
 	return false
 }
+func (x *sn) Magnitude() int64 {
+	if x.isLeaf {
+		return int64(x.val)
+	}
+	return (3 * x.left.Magnitude()) + (2 * x.right.Magnitude())
+}
 
 //var ltest = "[[[[5,11],[13,0]],[[8,[7,7]],[[7,9],[5,0]]]],[[2,[[0,8],[3,4]]],[[[6,7],1],[7,[1,6]]]]]"
 
@@ -209,6 +215,7 @@ func main() {
 	fname = "tiny2.txt"
 	fname = "tiny3.txt"
 	fname = "tiny.txt"
+	fname = "input.txt"
 	f, _ := os.Open(fname)
 	scanner := bufio.NewScanner(f)
 
@@ -233,7 +240,8 @@ func main() {
 		sum.Reduce()
 		log.Println("=", sum)
 		fmt.Println("########################")
-		fmt.Println("")
+		fmt.Println(snailfish.Root().Magnitude())
+		fmt.Println("########################")
 		//fmt.Println(sum)
 		snailfish = sum
 	}

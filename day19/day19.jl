@@ -10,12 +10,14 @@ function test(a, b)
     for p1 in eachrow(origin)
         for p2 in eachrow(origin)
             push!(a, p1 - p2)
+            #push!(a, p1 - origin[1,:])
         end
     end
 
     for p1 in eachrow(exScans[2])
         for p2 in eachrow(exScans[2])
-            push!(b, p1 - p2)
+            #push!(b, p1 - p2)
+            push!(b, p1 - exScans[2][1, :])
         end
     end
     for (i, r) in enumerate(rall)

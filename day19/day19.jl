@@ -4,32 +4,34 @@ include("example.jl")
 
 origin = exScans[1]
 
-function test(a, b)
+function test(left, right)
+    a = Set([])
+    b = Set([])
+    c = Set([])
 
-
-    for p1 in eachrow(origin)
-        for p2 in eachrow(origin)
+    for p1 in eachrow(left)
+        for p2 in eachrow(left)
             push!(a, p1 - p2)
-            #push!(a, p1 - origin[1,:])
+            #push!(a, p1 - left[1, :])
         end
     end
 
-    for p1 in eachrow(exScans[2])
-        for p2 in eachrow(exScans[2])
-            #push!(b, p1 - p2)
-            push!(b, p1 - exScans[2][1, :])
+    for p1 in eachrow(right)
+        for p2 in eachrow(right)
+            push!(b, p1 - p2)
+            #push!(b, p1 - right[1, :])
         end
     end
     for (i, r) in enumerate(rall)
         c = [r * z for z in b]
         result = intersect(a, c)
-
-        #  if length(result) == 133 # 11 distances for 12 points + self
-        println(length(result))
-        #   return result
-        #   end
+        #println(length(result))
+        if length(result) == 133
+            #println(length(result))
+            return (r,true)
+        end
     end
-    Set([])
+    rall[1],false
 end
 
 
@@ -64,6 +66,13 @@ function test2()
     end
 end
 
-a = Set([])
-b = Set([])
-test(a, b)
+function getSequence() 
+
+
+end
+ 
+
+println(test(origin, exScans[2]))
+println(test(exScans[2], exScans[1]))
+println(test(exScans[2], exScans[3]))
+println(test(exScans[2], exScans[4]))

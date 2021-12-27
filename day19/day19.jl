@@ -113,33 +113,53 @@ function checkRotation(origin, point)
     found
 end
 
+struct Link
+    from::Any
+    to::Any
+    rot::Any
+    left::Any
+    right::Any
+end
+
 function getNext(j, scans)
     #find link from one scanner to next scanner
+    links = []
     scan = scans[j]
     n = length(scans)
     for i = 1:length(scans)
         (rot, ok, left, right) = test(scan, scans[i])
         if ok
-            println("scanner $(j-1) -> $(i-1)")
+            link = Link(j, i, rot, left, right)
+            push!(links, link)
+            #println(link)
             continue
         end
     end
-    return rot, i, left, right
+    return links
 end
 
 function getSequence(scans)
 
     for i = 1:length(scans)
-        (rot, j, left, right) = getNext(i, scans)
+        #(rot, j, left, right) = getNext(i, scans)
+        links = getNext(i, scans)
+        for link in links
+            println("$(link.from) -> $(link.to) with $(link.rot)")
+        end
+        for link in links
+            #          #println(link)
+            #            println("$(link.from) -> $(link.to)")
+            #            c = [link.rot * z for z in keys(link.right)]
+            #            d = collect(intersect(keys(link.left), c))
+            #            common = d[1]
+            #            x = link.left[common]
+            #            y = link.right[link.rot*common]
+            #            y = -(link.rot) * y
+            #            translation = x + y
+            #            #println("Scnr $(link.from-1) -> Scnr $(link.to-1) at rot $link.rot transl $translation")
 
-        c = [rot * z for z in keys(right)]
-        d = collect(intersect(keys(left), c))
-        common = d[1]
-        x = left[common]
-        y = right[rot*common]
-        y = -rot * y
-        translation = x + y
-        #println("Scnr $(i-1) -> Scnr $(j-1) at rot $rot transl $translation")
+        end
+
 
     end
 end

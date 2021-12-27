@@ -113,22 +113,25 @@ function checkRotation(origin, point)
     found
 end
 
-function getNext(scan, scans)
+function getNext(j, scans)
     #find link from one scanner to next scanner
+    scan = scans[j]
     n = length(scans)
     for i = 1:length(scans)
         (rot, ok, left, right) = test(scan, scans[i])
         if ok
-            #println("scanner $i is next scanner")
-            return rot, i, left, right
+            println("scanner $(j-1) -> $(i-1)")
+            continue
         end
     end
+    return rot, i, left, right
 end
 
 function getSequence(scans)
 
-    for (i, scan) in enumerate(scans)
-        (rot, j, left, right) = getNext(scan, scans)
+    for i = 1:length(scans)
+        (rot, j, left, right) = getNext(i, scans)
+
         c = [rot * z for z in keys(right)]
         d = collect(intersect(keys(left), c))
         common = d[1]
@@ -136,7 +139,7 @@ function getSequence(scans)
         y = right[rot*common]
         y = -rot * y
         translation = x + y
-        println("Scnr $i -> Scnr $j at rot $rot transl $translation")
+        #println("Scnr $(i-1) -> Scnr $(j-1) at rot $rot transl $translation")
 
     end
 end

@@ -75,20 +75,24 @@ function test(left, right)
         b = Dict()
         for p1 in eachrow(left)
             for p2 in eachrow(left)
-                a[p1-left[i, :]] = p1
+                if p1 != p2
+                    a[p1-left[i, :]] = p1
+                end
             end
         end
         for p1 in eachrow(right)
             for p2 in eachrow(right)
-                b[p1-p2] = p1
+                if p1 != p2
+                    b[p1-p2] = p1
+                end
             end
         end
         for (i, r) in enumerate(rall)
             c = [r * z for z in keys(b)]
             result = intersect(keys(a), c)
             #println(length(result))
-            if length(result) == 12
-                println(result)
+            if length(result) == 11
+                #println(result)
                 return (r, true, a, b)
             end
         end
@@ -103,7 +107,7 @@ function checkRotation(origin, point)
     for row = 1:div(length(origin), 3)
         if point == origin[row, :]
             found = 1
-            println("scanned", point)
+            #println("scanned", point)
         end
     end
     found
@@ -122,9 +126,18 @@ function getNext(scan, scans)
 end
 
 function getSequence(scans)
+
     for (i, scan) in enumerate(scans)
         (rot, j, left, right) = getNext(scan, scans)
-        println("Scanner $i links to Scanner $j with rotation $rot")
+        c = [rot * z for z in keys(right)]
+        d = collect(intersect(keys(left), c))
+        common = d[1]
+        x = left[common]
+        y = right[rot*common]
+        y = -rot * y
+        translation = x + y
+        println("Scnr $i -> Scnr $j at rot $rot transl $translation")
+
     end
 end
 

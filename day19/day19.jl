@@ -8,29 +8,24 @@ function test(left, right)
     found = false
     i = 1
     while i < length(left) / 3
-        a = Set([])
-        b = Set([])
-        c = Set([])
-
+        a = Dict()
+        b = Dict()
         for p1 in eachrow(left)
             for p2 in eachrow(left)
-                #push!(a, p1 - p2)
-                push!(a, p1 - left[i, :])
+                a[p1-left[i, :]] = p1
             end
         end
-
         for p1 in eachrow(right)
             for p2 in eachrow(right)
-                push!(b, p1 - p2)
-                #push!(b, p1 - right[1, :])
+                b[p1-p2] = p1
             end
         end
         for (i, r) in enumerate(rall)
-            c = [r * z for z in b]
-            result = intersect(a, c)
+            c = [r * z for z in keys(b)]
+            result = intersect(keys(a), c)
             #println(length(result))
             if length(result) == 12
-                #println(length(result))
+                println(result)
                 return (r, true)
             end
         end

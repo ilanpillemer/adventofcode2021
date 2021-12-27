@@ -121,6 +121,11 @@ struct Link
     right::Any
 end
 
+struct DecoratedLink
+    link::Link
+    trans::Any
+end
+
 function getNext(j, scans)
     #find link from one scanner to next scanner
     links = []
@@ -138,30 +143,25 @@ function getNext(j, scans)
     return links
 end
 
-function getSequence(scans)
+function getTranslation(link)
+    c = Dict([((link.rot * z), z) for z in keys(link.right)])
+    d = collect(intersect(keys(link.left), keys(c)))
+    common = first(d)
+    inverse = c[common]
+    translation = link.right[inverse] - ((link.rot) * link.left[common])
+    translation
+end
 
+function getSequence(scans)
+    connects = []
     for i = 1:length(scans)
-        #(rot, j, left, right) = getNext(i, scans)
         links = getNext(i, scans)
         for link in links
-            println("$(link.from) -> $(link.to) with $(link.rot)")
+            translation = getTranslation(link)
+            push!(connects, DecoratedLink(link, translation))
         end
-        for link in links
-            #          #println(link)
-            #            println("$(link.from) -> $(link.to)")
-            #            c = [link.rot * z for z in keys(link.right)]
-            #            d = collect(intersect(keys(link.left), c))
-            #            common = d[1]
-            #            x = link.left[common]
-            #            y = link.right[link.rot*common]
-            #            y = -(link.rot) * y
-            #            translation = x + y
-            #            #println("Scnr $(link.from-1) -> Scnr $(link.to-1) at rot $link.rot transl $translation")
-
-        end
-
-
     end
+    connects
 end
 
 
@@ -172,4 +172,38 @@ end
 #println(test(exScans[2], exScans[5]))
 
 #getNext(origin, exScans)
-getSequence(exScans)
+
+#-618,-824,-621
+#-537,-823,-458  <---
+#-447,-329,318
+#404,-588,-901
+#544,-627,-890
+#528,-643,409
+#-661,-816,-575
+#390,-675,-793
+#423,-701,434
+#-345,-311,381
+#459,-707,401
+#-485,-357,347
+###############
+#686,422,578
+#605,423,415 <---
+#515,917,-361
+#-336,658,858
+#-476,619,847
+#-460,603,-452
+#729,430,532
+#-322,571,750
+#-355,545,-477
+#413,935,-424
+#-391,539,-444
+#553,889,-390
+
+nodes = getSequence(exScans)
+#           println(
+#                "link $(link.from) -> $(link.to), rot $(link.rot) and trasl $translation",
+# )
+
+for node in nodes
+    println("$(node.link.from) -> $(node.link.to) :: $(node.link.rot) :: $(node.trans)")
+end

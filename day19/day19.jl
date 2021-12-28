@@ -148,11 +148,36 @@ function getPath(tree, acc)
 end
 
 tree = getTree(nodes)
-path = getPath(tree, Int64[from])
-
-function getPoints(from, nodes, acc, points)
-    points = nodes.left
-
-
-
+function getLink(from, to, nodes)
+    for node in nodes
+        if node.link.from == from && node.link.to == to
+            return node
+        end
+    end
 end
+
+function getPoints(from, nodes)
+    path = getPath(tree, Int64[from])
+    points = exScans[from]
+    return getPoints(nodes, path, points)
+end
+function getPoints(nodes, acc, points)
+    if length(acc) == 1
+        return points
+    end
+    from = acc[1]
+    to = acc[2]
+    deleteat!(acc, 1)
+    link = getLink(from, to, nodes)
+    println("from $(link.link.from)")
+    println("to $(link.link.to)")
+    println("rot $(link.link.rot)")
+    println("trans $(link.trans)")
+
+    return getPoints(nodes, acc, points)
+end
+
+
+x1 = getPoints(2, nodes)
+x2 = mapslices((x) -> [-1 0 0; 0 1 0; 0 0 -1] \ x, x1, dims = [2])
+mapslices((x) -> [68, -1246, -43] + x, x2, dims = [2])

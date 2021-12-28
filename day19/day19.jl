@@ -4,68 +4,25 @@ include("example.jl")
 
 origin = exScans[1]
 
+struct Link
+    from::Any
+    to::Any
+    rot::Any
+    left::Any
+    right::Any
+end
 
-#c = [rot * z for z in keys(right)]
-#
-#julia> d = intersect(keys(left),c)
-#Set{Any} with 12 elements:
-#  [-941, -235, 443]
-#  [-1065, -228, 326]
-#  [140, -39, 11]
-#  [-851, 259, 1219]
-#  [-749, 277, 1282]
-#  [19, -113, 1335]
-#  [-14, -87, 108]
-#  [124, -55, 1310]
-#  [-889, 231, 1248]
-#  [55, -119, 1302]
-#  [0, 0, 0]
-#  [-1022, -236, 280]
-#
-#julia> right[rot*([-1065, -228, 326])]
-#3-element view(::Matrix{Int64}, 11, :) with eltype Int64:
-# 729
-# 430
-# 532
-#
-#julia> left[[-1065, -228, 326]]
-#3-element view(::Matrix{Int64}, 8, :) with eltype Int64:
-# -661
-# -816
-# -575
-#julia> x=left[[-1065, -228, 326]]
-#3-element view(::Matrix{Int64}, 8, :) with eltype Int64:
-# -661
-# -816
-# -575
-#
-#julia> y=right[rot*([-1065, -228, 326])]
-#3-element view(::Matrix{Int64}, 11, :) with eltype Int64:
-# 729
-# 430
-# 532
-#
-#julia> y=-rot*y
-#3-element Vector{Int64}:
-#  729
-# -430
-#  532
-#
-#julia> x-y
-#3-element Vector{Int64}:
-# -1390
-#  -386
-# -1107
-#
-#julia> x+y
-#3-element Vector{Int64}:
-#    68
-# -1246
-#   -43
+struct DecoratedLink
+    link::Link
+    trans::Any
+end
 
+#struct Tree
+#    parent::tree
+#    val::DecoratedLink
+#    children::Vector{Tree}
+#end
 
-
-#Because of this, scanner 1 must be at 68,-1246,-43 (relative to scanner 0
 
 function test(left, right)
     found = false
@@ -113,18 +70,7 @@ function checkRotation(origin, point)
     found
 end
 
-struct Link
-    from::Any
-    to::Any
-    rot::Any
-    left::Any
-    right::Any
-end
 
-struct DecoratedLink
-    link::Link
-    trans::Any
-end
 
 function getNext(j, scans)
     #find link from one scanner to next scanner
@@ -165,45 +111,20 @@ function getSequence(scans)
 end
 
 
-#println(test(origin, exScans[2]))
-#println(test(exScans[2], exScans[1]))
-#println(test(exScans[2], exScans[3]))
-#println(test(exScans[2], exScans[4]))
-#println(test(exScans[2], exScans[5]))
-
-#getNext(origin, exScans)
-
-#-618,-824,-621
-#-537,-823,-458  <---
-#-447,-329,318
-#404,-588,-901
-#544,-627,-890
-#528,-643,409
-#-661,-816,-575
-#390,-675,-793
-#423,-701,434
-#-345,-311,381
-#459,-707,401
-#-485,-357,347
-###############
-#686,422,578
-#605,423,415 <---
-#515,917,-361
-#-336,658,858
-#-476,619,847
-#-460,603,-452
-#729,430,532
-#-322,571,750
-#-355,545,-477
-#413,935,-424
-#-391,539,-444
-#553,889,-390
-
 nodes = getSequence(exScans)
-#           println(
-#                "link $(link.from) -> $(link.to), rot $(link.rot) and trasl $translation",
-# )
 
 for node in nodes
     println("$(node.link.from) -> $(node.link.to) :: $(node.link.rot) :: $(node.trans)")
 end
+
+function getTree(nodes)
+    d = Dict()
+    for node in nodes
+        xs = get(d, node.link.from, [])
+        d[node.link.from] = xs
+        d[node.link.from] = push!(d[node.link.from], node.link.to)
+    end
+    d
+end
+
+tree = getTree(nodes)

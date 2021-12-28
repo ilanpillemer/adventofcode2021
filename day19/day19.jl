@@ -128,3 +128,31 @@ function getTree(nodes)
 end
 
 tree = getTree(nodes)
+println(tree[2])
+
+function getPath(tree, acc)
+    if length(acc) > 0 && acc[length(acc)] == 1
+        return acc
+    end
+    for xs in values(tree[acc[length(acc)]])
+        if xs in acc
+            continue
+        end
+        push!(acc, xs)
+        if getPath(tree, acc) != -1
+            return acc
+        end
+        deleteat!(acc, length(acc))
+    end
+    -1
+end
+
+tree = getTree(nodes)
+path = getPath(tree, Int64[from])
+
+function getPoints(from, nodes, acc, points)
+    points = nodes.left
+
+
+
+end

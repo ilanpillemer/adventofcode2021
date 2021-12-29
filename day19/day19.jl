@@ -2,14 +2,14 @@ include("rots.jl")
 println("day 19")
 include("example.jl")
 
-origin = exScans[1]
+scans = exScans
+
+origin = scans[1]
 
 struct Link
     from::Any
     to::Any
     rot::Any
-    left::Any
-    right::Any
     trans::Any
 end
 
@@ -80,9 +80,10 @@ function getNext(j, scans)
     scan = scans[j]
     n = length(scans)
     for i = 1:length(scans)
-        (rot, ok, left, right) = test(scan, scans[i])
+        (rot, ok, transl) = test(scan, scans[i])
         if ok
-            link = Link(j, i, rot, left, right)
+            #link = Link(j, i, rot, transl)
+            link = Link(i, j, rot, transl)
             push!(links, link)
             #println(link)
             continue
@@ -105,26 +106,21 @@ function getSequence(scans)
     for i = 1:length(scans)
         links = getNext(i, scans)
         for link in links
-            translation = getTranslation(link)
-            push!(connects, DecoratedLink(link, translation))
+            push!(connects, link)
         end
     end
     connects
 end
 
 
-nodes = getSequence(exScans)
 
-for node in nodes
-    println("$(node.link.from) -> $(node.link.to) :: $(node.link.rot) :: $(node.trans)")
-end
 
 function getTree(nodes)
     d = Dict()
     for node in nodes
-        xs = get(d, node.link.from, [])
-        d[node.link.from] = xs
-        d[node.link.from] = push!(d[node.link.from], node.link.to)
+        xs = get(d, node.from, [])
+        d[node.from] = xs
+        d[node.from] = push!(d[node.from], node.to)
     end
     d
 end
@@ -152,7 +148,7 @@ end
 tree = getTree(nodes)
 function getLink(from, to, nodes)
     for node in nodes
-        if node.link.from == from && node.link.to == to
+        if node.from == from && node.to == to
             return node
         end
     end
@@ -160,7 +156,7 @@ end
 
 function getPoints(from, nodes)
     path = getPath(tree, Int64[from])
-    points = exScans[from]
+    points = scans[from]
     return getPoints(nodes, path, points)
 end
 function getPoints(nodes, acc, points)
@@ -171,15 +167,38 @@ function getPoints(nodes, acc, points)
     to = acc[2]
     deleteat!(acc, 1)
     link = getLink(from, to, nodes)
-    println("from $(link.link.from)")
-    println("to $(link.link.to)")
-    println("rot $(link.link.rot)")
-    println("trans $(link.trans)")
+    #println("from $(link.from)")
+    #println("to $(link.to)")
+    #println("rot $(link.rot)")
+    #println("trans $(link.trans)")
+    points = mapslices(x -> (link.rot) * x + (link.trans), points, dims = 2)
+    #    for p in eachrow(points)
+    #        println(p)
+    #    end
+
+
+
 
     return getPoints(nodes, acc, points)
 end
 
 
-x1 = getPoints(2, nodes)
-x2 = mapslices((x) -> [-1 0 0; 0 1 0; 0 0 -1] \ x, x1, dims = [2])
-mapslices((x) -> [68, -1246, -43] + x, x2, dims = [2])
+#x1 = getPoints(2, nodes)
+#x2 = mapslices((x) -> [-1 0 0; 0 1 0; 0 0 -1] \ x, x1, dims = [2])
+#mapslices((x) -> [68, -1246, -43] + x, x2, dims = [2])
+
+
+nodes = getSequence(scans)
+
+for node in nodes
+    println("$(node.from) -> $(node.to) :: $(node.rot) :: $(node.trans)")
+end
+println("...")
+ps = Set()
+for i = 1:length(scans)
+    x = getPoints(i, nodes)
+    for x1 in eachrow(x)
+        push!(ps, x1)
+    end
+end
+println(length(ps))

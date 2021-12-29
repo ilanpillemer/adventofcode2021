@@ -1,9 +1,10 @@
 include("rots.jl")
 println("day 19")
-include("example.jl")
+include("example.jl") # load exScans
+include("input.jl") # load  inputScans
 
-scans = exScans
-
+#scans = exScans
+scans = inputScans
 origin = scans[1]
 
 struct Link
@@ -83,7 +84,9 @@ function getNext(j, scans)
         (rot, ok, transl) = test(scan, scans[i])
         if ok
             #link = Link(j, i, rot, transl)
+
             link = Link(i, j, rot, transl)
+            println("loading.. $(link.from) -> $(link.to)")
             push!(links, link)
             #println(link)
             continue
@@ -160,6 +163,7 @@ function getPoints(from, nodes)
     return getPoints(nodes, path, points)
 end
 function getPoints(nodes, acc, points)
+    println(acc)
     if length(acc) == 1
         return points
     end

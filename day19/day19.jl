@@ -45,12 +45,14 @@ function test(left, right)
             end
         end
         for (i, r) in enumerate(rall)
-            c = [r * z for z in keys(b)]
-            result = intersect(keys(a), c)
+            c = Dict([((r * z), b[z]) for z in keys(b)])
+            result = intersect(keys(a), keys(c))
+            c = filter(p -> first(p) in result, c)
+            d = filter(p -> first(p) in result, a)
             #println(length(result))
             if length(result) == 11
                 #println(result)
-                return (r, true, a, b)
+                return (r, true, d, b, c)
             end
         end
         i = i + 1

@@ -86,7 +86,7 @@ function getNext(j, scans)
             #link = Link(j, i, rot, transl)
 
             link = Link(i, j, rot, transl)
-            println("loading.. $(link.from) -> $(link.to)")
+            #println("loading.. $(link.from) -> $(link.to)")
             push!(links, link)
             #println(link)
             continue
@@ -163,7 +163,6 @@ function getPoints(from, nodes)
     return getPoints(nodes, path, points)
 end
 function getPoints(nodes, acc, points)
-    println(acc)
     if length(acc) == 1
         return points
     end
@@ -171,20 +170,12 @@ function getPoints(nodes, acc, points)
     to = acc[2]
     deleteat!(acc, 1)
     link = getLink(from, to, nodes)
-    #println("from $(link.from)")
-    #println("to $(link.to)")
-    #println("rot $(link.rot)")
-    #println("trans $(link.trans)")
+
     points = mapslices(x -> (link.rot) * x + (link.trans), points, dims = 2)
-    #    for p in eachrow(points)
-    #        println(p)
-    #    end
-
-
-
-
     return getPoints(nodes, acc, points)
 end
+
+
 
 
 #x1 = getPoints(2, nodes)
@@ -206,3 +197,43 @@ for i = 1:length(scans)
     end
 end
 println(length(ps))
+
+
+function manhattan(a, b)
+
+end
+
+
+
+
+function getMaxDist(from, nodes)
+    path = getPath(tree, Int64[from])
+    #start = scans[from].trans
+    return getMaxDist(nodes, path, [0; 0; 0])
+end
+function getMaxDist(nodes, acc, sofar)
+    if length(acc) == 1
+        return sofar
+    end
+    from = acc[1]
+    to = acc[2]
+    deleteat!(acc, 1)
+    link = getLink(from, to, nodes)
+    sofar = (link.rot) * sofar + (link.trans)
+
+    return getMaxDist(nodes, acc, sofar)
+end
+
+scanLocations = []
+for i = 1:length(scans)
+    x = getMaxDist(i, nodes)
+    push!(scanLocations, x)
+end
+using Distances
+z = 0
+for a in scanLocations
+    for b in scanLocations
+        global z = max(z, cityblock(a, b))
+    end
+end
+println(z)

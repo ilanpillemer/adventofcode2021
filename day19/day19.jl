@@ -10,12 +10,10 @@ struct Link
     rot::Any
     left::Any
     right::Any
-end
-
-struct DecoratedLink
-    link::Link
     trans::Any
 end
+
+
 
 #struct Tree
 #    parent::tree
@@ -45,14 +43,16 @@ function test(left, right)
             end
         end
         for (i, r) in enumerate(rall)
-            c = Dict([((r * z), b[z]) for z in keys(b)])
+            c = Dict([((r * z), r * b[z]) for z in keys(b)])
             result = intersect(keys(a), keys(c))
             c = filter(p -> first(p) in result, c)
             d = filter(p -> first(p) in result, a)
+
             #println(length(result))
             if length(result) == 11
-                #println(result)
-                return (r, true, d, b, c)
+                key = first(result)
+                transl = d[key] - c[key]
+                return (r, true, transl)
             end
         end
         i = i + 1

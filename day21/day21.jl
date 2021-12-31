@@ -1,10 +1,5 @@
 println("day21")
 
-
-
-
-
-
 function init()
     global start = 0
 end
@@ -25,12 +20,9 @@ end
 
 #Player 1 starting position: 4
 #Player 2 starting position: 3
-
-
 function play(p1, p2)
     init()
     rolls = 0
-
     score1 = 0
     score2 = 0
     while true

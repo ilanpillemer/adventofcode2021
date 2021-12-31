@@ -1,0 +1,67 @@
+cuboids = Dict()
+for x = -20:26, y = -36:17, z = -47:7
+    cuboids[(x, y, z)] = true
+end
+for x = -20:33, y = -21:23, z = -26:28
+    cuboids[(x, y, z)] = true
+end
+for x = -22:28, y = -29:23, z = -38:16
+    cuboids[(x, y, z)] = true
+end
+for x = -46:7, y = -6:46, z = -50:-1
+    cuboids[(x, y, z)] = true
+end
+for x = -49:1, y = -3:46, z = -24:28
+    cuboids[(x, y, z)] = true
+end
+for x = 2:47, y = -22:22, z = -23:27
+    cuboids[(x, y, z)] = true
+end
+for x = -27:23, y = -28:26, z = -21:29
+    cuboids[(x, y, z)] = true
+end
+for x = -39:5, y = -6:47, z = -3:44
+    cuboids[(x, y, z)] = true
+end
+for x = -30:21, y = -8:43, z = -13:34
+    cuboids[(x, y, z)] = true
+end
+for x = -22:26, y = -27:20, z = -29:19
+    cuboids[(x, y, z)] = true
+end
+for x = -48:-32, y = 26:41, z = -47:-37
+    cuboids[(x, y, z)] = false
+end
+for x = -12:35, y = 6:50, z = -50:-2
+    cuboids[(x, y, z)] = true
+end
+for x = -48:-32, y = -32:-16, z = -15:-5
+    cuboids[(x, y, z)] = false
+end
+for x = -18:26, y = -33:15, z = -7:46
+    cuboids[(x, y, z)] = true
+end
+for x = -40:-22, y = -38:-28, z = 23:41
+    cuboids[(x, y, z)] = false
+end
+for x = -16:35, y = -41:10, z = -47:6
+    cuboids[(x, y, z)] = true
+end
+for x = -32:-23, y = 11:30, z = -14:3
+    cuboids[(x, y, z)] = false
+end
+for x = -49:-5, y = -3:45, z = -29:18
+    cuboids[(x, y, z)] = true
+end
+for x = 18:30, y = -20:-8, z = -3:13
+    cuboids[(x, y, z)] = false
+end
+for x = -41:9, y = -7:43, z = -33:15
+    cuboids[(x, y, z)] = true
+end
+#for x = -54112:-39298, y = -85059:-49293, z = -27449:7877
+#    cuboids[(x, y, z)] = true
+#end
+#for x = 967:23432, y = 45373:81175, z = 27513:53682
+#    cuboids[(x, y, z)] = true
+#end

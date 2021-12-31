@@ -1,6 +1,7 @@
 # provides rawImgEnh and img
 #include("sample.jl")
-# 5168 is too high
+# part 1 is 5057
+# part 2 is 18502
 include("input.jl")
 testpos = parse(Int64, "000100010", base = 2)
 getNext(x) = rawImgEnh[x]
@@ -76,19 +77,19 @@ function lookup(dict, x, y, round)
 end
 
 function turn(d, round)
-    border = "0"
+    border = '1'
     #odd is 1
     #even is 0
     if round % 2 == 0
-        border == "1"
+        border = '0'
     end
     z = Dict()
-    for x = -50:1:150, y = -100:1:300
+    for x = -300:1:300, y = -300:1:300
         z[(x, y)] = lookup(d, x, y, round)
     end
     for (x, y) in keys(z)
-        if x < -40 || y < -90 || x > 140 || y > 200
-            z[(x, y)] = z[(-30, -80)]
+        if x == -300 || x == 300
+            z[(x, y)] = border
         end
     end
 
@@ -98,8 +99,8 @@ function turn(d, round)
 end
 
 function display(thing)
-    for y = -100:1:300
-        for x = -50:1:150
+    for y = -300:1:-290
+        for x = -300:1-290
             if haskey(thing, (x, y))
                 print(thing[(x, y)])
             else
@@ -110,7 +111,9 @@ function display(thing)
     end
 end
 
-start = D()
-once = turn(start, 1)
-twice = turn(once, 2)
-total(twice)
+global next = D()
+for i = 1:50
+    global next = turn(next, i)
+    println(i)
+end
+println(total(next))

@@ -59,3 +59,5 @@ end
 for x = -42:2, y = -37:12, z = -34:14
     cuboids[(x, y, z)] = true
 end
+
+sum(values(cuboids))

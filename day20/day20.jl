@@ -36,7 +36,6 @@ function lookup(dict, x, y, round)
         dict[(x - 1, y + 1)] = border
     end
 
-
     if !haskey(dict, (x, y - 1))
         dict[(x, y - 1)] = border
     end
@@ -46,7 +45,6 @@ function lookup(dict, x, y, round)
     if !haskey(dict, (x, y + 1))
         dict[(x, y + 1)] = border
     end
-
 
     if !haskey(dict, (x + 1, y - 1))
         dict[(x + 1, y - 1)] = border
@@ -92,10 +90,7 @@ function turn(d, round)
             z[(x, y)] = border
         end
     end
-
-
     z
-
 end
 
 function display(thing)
@@ -114,6 +109,5 @@ end
 global next = D()
 for i = 1:50
     global next = turn(next, i)
-    println(i)
 end
 println(total(next))

@@ -53,13 +53,17 @@ function coords(xs, ys, zs)
     push!(Z, last(zs) + 1)
 end
 
-include("example2.jl") # load data
+#include("example2.jl") # load data
+include("input.jl") # load data
+
 sort!(X)
 sort!(Y)
 sort!(Z)
 steps
 
-for s in steps
+allsteps = length(steps)
+for (i, s) in enumerate(steps)
+    println("processing step $i of $allsteps")
     x = findfirst(x -> x == s.x, X)
     x1 = findfirst(x -> x == s.x1, X)
     y = findfirst(x -> x == s.y, Y)
@@ -75,7 +79,6 @@ N = length(X)
 
 total = 0
 for x = 1:N-1, y = 1:N-1, z = 1:N-1
-
     process = get(grid, (x, y, z), false)
     if process
         cuboid_volume = ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))

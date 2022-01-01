@@ -9,11 +9,32 @@ Edit , /^/ i /cuboids=Dict()\n/
 Edit $ a /\nsum(values(cuboids))/
 ```
 
+#Part 2 make data easier to read in
+
+```
+Edit $ a /\n/
+Edit , s/=/=\(/g
+Edit , s/,/),/g
+Edit , s/\n/)\n/g
+Edit , s/\n/)\n/g
+Edit , s/on/on(/g
+Edit , s/off/off(/g
+Edit ,s /.=//g
+Edit , s/\.\./,/g
+```
+
 #Part 2 with structureal regex
+
+This failed, as too much data.
+
 ```
 Edit , s/\.\./:/g
 Edit , s/x=/A\[/g
 Edit , s/y=//g
 Edit , s/z=//g
-Edit , s/\n/\]\n/
+Edit , s/\n/\]\n/g
+Edit ,x/^on.*]/ a / .=1/
+Edit ,x/^off.*]/ a / .=0/
+Edit , s/on//g
+Edit , s/off//g
 ```

@@ -66,7 +66,7 @@ for s in steps
     y1 = findfirst(x -> x == s.y1, Y)
     z = findfirst(x -> x == s.z, Z)
     z1 = findfirst(x -> x == s.z1, Z)
-    for i = x:x1, j = y:y1, k = z:z1
+    for i = x:x1-1, j = y:y1-1, k = z:z1-1
         grid[(i, j, k)] = (s.state == "on")
     end
 end
@@ -74,9 +74,10 @@ end
 N = length(X)
 
 total = 0
-for x = 0:N-1, y = 0:N-1, z = 0:N-1
+for x = 1:N-1, y = 1:N-1, z = 1:N-1
 
-    if haskey(grid, (x, y, z)) && grid[(x, y, z)]
+    process = get(grid, (x, y, z), false)
+    if process
         cuboid_volume = ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
         global total = total + cuboid_volume
     end

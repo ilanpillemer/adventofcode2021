@@ -54,7 +54,7 @@ function coords(xs, ys, zs)
 end
 
 #include("example2.jl") # load data
-include("input.jl") # load data
+include("input.jl") # load data # answer should be 1125649856443608
 
 sort!(X)
 sort!(Y)

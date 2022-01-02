@@ -4,7 +4,7 @@ X = []
 Y = []
 Z = []
 steps = []
-grid = Dict()
+
 struct Step
     x::Any
     x1::Any
@@ -54,13 +54,13 @@ function coords(xs, ys, zs)
 end
 
 #include("example2.jl") # load data
-include("input.jl") # load data # answer should be 1125649856443608
+include("input.jl") # load data # answer should be
 
 sort!(X)
 sort!(Y)
 sort!(Z)
-steps
-
+grid = zeros(Bool, N, N, N)
+N = length(X)
 allsteps = length(steps)
 for (i, s) in enumerate(steps)
     println("processing step $i of $allsteps")
@@ -71,18 +71,21 @@ for (i, s) in enumerate(steps)
     z = findfirst(x -> x == s.z, Z)
     z1 = findfirst(x -> x == s.z1, Z)
     for i = x:x1-1, j = y:y1-1, k = z:z1-1
-        grid[(i, j, k)] = (s.state == "on")
+        grid[i, j, k] = (s.state == "on")
     end
 end
 
-N = length(X)
 
-total = 0
-for x = 1:N-1, y = 1:N-1, z = 1:N-1
-    process = get(grid, (x, y, z), false)
-    if process
-        cuboid_volume = ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
-        global total = total + cuboid_volume
+function part2()
+    total = 0
+    for x = 1:N-1, y = 1:N-1, z = 1:N-1
+        process = grid[x, y, z]
+        if process
+            cuboid_volume = ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
+            total = total + cuboid_volume
+        end
     end
+    total
 end
-total
+
+part2()

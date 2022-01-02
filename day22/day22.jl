@@ -56,10 +56,7 @@ end
 #include("example2.jl") # load data
 include("input.jl") # load data # answer should be 1125649856443608
 
-
-
-
-function part2()
+function part2(X, Y, Z)
     sort!(X)
     sort!(Y)
     sort!(Z)
@@ -68,7 +65,7 @@ function part2()
 
     allsteps = length(steps)
     for (i, s) in enumerate(steps)
-        println("processing step $i of $allsteps")
+        #println("processing step $i of $allsteps")
         x = findfirst(x -> x == s.x, X)
         x1 = findfirst(x -> x == s.x1, X)
         y = findfirst(x -> x == s.y, Y)
@@ -90,4 +87,4 @@ function part2()
     total
 end
 
-part2()
+part2(X, Y, Z)

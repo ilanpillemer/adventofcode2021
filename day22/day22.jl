@@ -56,28 +56,29 @@ end
 #include("example2.jl") # load data
 include("input.jl") # load data # answer should be 1125649856443608
 
-sort!(X)
-sort!(Y)
-sort!(Z)
-N = length(X)
-grid = zeros(Bool, N, N, N)
 
-allsteps = length(steps)
-for (i, s) in enumerate(steps)
-    println("processing step $i of $allsteps")
-    x = findfirst(x -> x == s.x, X)
-    x1 = findfirst(x -> x == s.x1, X)
-    y = findfirst(x -> x == s.y, Y)
-    y1 = findfirst(x -> x == s.y1, Y)
-    z = findfirst(x -> x == s.z, Z)
-    z1 = findfirst(x -> x == s.z1, Z)
-    for i = x:x1-1, j = y:y1-1, k = z:z1-1
-        grid[i, j, k] = (s.state == "on")
-    end
-end
 
 
 function part2()
+    sort!(X)
+    sort!(Y)
+    sort!(Z)
+    N = length(X)
+    grid = zeros(Bool, N, N, N)
+
+    allsteps = length(steps)
+    for (i, s) in enumerate(steps)
+        println("processing step $i of $allsteps")
+        x = findfirst(x -> x == s.x, X)
+        x1 = findfirst(x -> x == s.x1, X)
+        y = findfirst(x -> x == s.y, Y)
+        y1 = findfirst(x -> x == s.y1, Y)
+        z = findfirst(x -> x == s.z, Z)
+        z1 = findfirst(x -> x == s.z1, Z)
+        for i = x:x1-1, j = y:y1-1, k = z:z1-1
+            grid[i, j, k] = (s.state == "on")
+        end
+    end
     total = 0
     for x = 1:N-1, y = 1:N-1, z = 1:N-1
         process = grid[x, y, z]

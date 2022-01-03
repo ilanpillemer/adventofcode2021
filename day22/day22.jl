@@ -78,8 +78,8 @@ function part2(X, Y, Z)
 
 
     @inbounds @fastmath for x = 1:N-1, y = 1:N-1, z = 1:N-1
-        process = grid[x, y, z]
-        if process
+
+        if grid[x, y, z]
             total += ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
         end
     end

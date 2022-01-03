@@ -6,13 +6,13 @@ Z = Int[]
 steps = []
 
 struct Step
-    x::Any
-    x1::Any
-    y::Any
-    y1::Any
-    z::Any
-    z1::Any
-    state::Any
+    x::Int
+    x1::Int
+    y::Int
+    y1::Int
+    z::Int
+    z1::Int
+    state::String
 end
 
 function on(xs, ys, zs)
@@ -75,7 +75,9 @@ function part2(X, Y, Z)
         grid[x:x1-1, y:y1-1, z:z1-1] .= (s.state == "on")
     end
     total = 0
-    for x = 1:N-1, y = 1:N-1, z = 1:N-1
+
+
+    @inbounds @fastmath for x = 1:N-1, y = 1:N-1, z = 1:N-1
         process = grid[x, y, z]
         if process
             total += ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))

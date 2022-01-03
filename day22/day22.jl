@@ -72,9 +72,7 @@ function part2(X, Y, Z)
         y1 = searchsortedfirst(Y, s.y1)
         z = searchsortedfirst(Z, s.z)
         z1 = searchsortedfirst(Z, s.z1)
-        for i = x:x1-1, j = y:y1-1, k = z:z1-1
-            grid[i, j, k] = (s.state == "on")
-        end
+        grid[x:x1-1, y:y1-1, z:z1-1] .= (s.state == "on")
     end
     total = 0
     for x = 1:N-1, y = 1:N-1, z = 1:N-1

@@ -66,17 +66,15 @@ function part2(X::Int, Y::Int, Z::Int)
     i = 0
     for s in steps
         i = i + 1
-        #println("processing step $i of $allsteps")
-        x = searchsortedfirst(X, s.x) + X[1] + 1
-        x1 = searchsortedfirst(X, s.x1) + X[1] + 1
-        y = searchsortedfirst(Y, s.y) + Y[1] + 1
-        y1 = searchsortedfirst(Y, s.y1) + Y[1] + 1
-        z = searchsortedfirst(Z, s.z) + Z[1] + 1
-        z1 = searchsortedfirst(Z, s.z1)ti + Z[1] + 1
-        for x = x:x1-1, y = y:y1-1, z = z:z1-1
-            if s.state == "on"
-                grid[x, y, z] = true
-            end
+        if s.state == "on"
+            #println("processing step $i of $allsteps")
+            x = searchsortedfirst(X, s.x) + X[1] + 1
+            x1 = searchsortedfirst(X, s.x1) + X[1] + 1
+            y = searchsortedfirst(Y, s.y) + Y[1] + 1
+            y1 = searchsortedfirst(Y, s.y1) + Y[1] + 1
+            z = searchsortedfirst(Z, s.z) + Z[1] + 1
+            z1 = searchsortedfirst(Z, s.z1)ti + Z[1] + 1
+            grid[x:x1-1, y:y1-1, z:z1-1] .= true
         end
     end
     #println(grid)
@@ -92,5 +90,3 @@ function part2(X::Int, Y::Int, Z::Int)
 end
 
 part2(X, Y, Z)
-
-#[(i, j, k) for i = 1:420, j = 1:420, k = 1:420]

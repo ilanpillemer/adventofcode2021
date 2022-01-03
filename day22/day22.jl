@@ -56,38 +56,41 @@ end
 #include("example2.jl") # load data
 include("input.jl") # load data # answer should be 1125649856443608
 
-function part2(X, Y, Z)
+function part2(X::Int, Y::Int, Z::Int)
     sort!(X)
     sort!(Y)
     sort!(Z)
     N = length(X)
-    grid = zeros(Bool, N, N, N)
-
+    grid = falses(N, N, N)
     allsteps = length(steps)
     i = 0
     for s in steps
         i = i + 1
         #println("processing step $i of $allsteps")
-        x = searchsortedfirst(X, s.x)
-        x1 = searchsortedfirst(X, s.x1)
-        y = searchsortedfirst(Y, s.y)
-        y1 = searchsortedfirst(Y, s.y1)
-        z = searchsortedfirst(Z, s.z)
-        z1 = searchsortedfirst(Z, s.z1)
+        x = searchsortedfirst(X, s.x) + X[1] + 1
+        x1 = searchsortedfirst(X, s.x1) + X[1] + 1
+        y = searchsortedfirst(Y, s.y) + Y[1] + 1
+        y1 = searchsortedfirst(Y, s.y1) + Y[1] + 1
+        z = searchsortedfirst(Z, s.z) + Z[1] + 1
+        z1 = searchsortedfirst(Z, s.z1)ti + Z[1] + 1
         for x = x:x1-1, y = y:y1-1, z = z:z1-1
-            grid[x, y, z] = (s.state == "on")
+            if s.state == "on"
+                grid[x, y, z] = true
+            end
         end
     end
     #println(grid)
     total = 0
 
-
-
-    @fastmath @inbounds for x = 1:N-1, y = 1:N-1, z = 1:N-1
-
-        total += grid[x, y, z] * ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
+    for xyz in eachindex(grid)
+        value = grid[xyz]
+        if value
+            total += ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
+        end
     end
     total
 end
 
 part2(X, Y, Z)
+
+#[(i, j, k) for i = 1:420, j = 1:420, k = 1:420]

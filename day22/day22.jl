@@ -62,10 +62,7 @@ function part2(X, Y, Z)
     sort!(Z)
     N = length(X)
     grid = falses(N, N, N)
-
-    allsteps = length(steps)
-    for (i, s) in enumerate(steps)
-        #println("processing step $i of $allsteps")
+    for s in steps
         x = searchsortedfirst(X, s.x)
         x1 = searchsortedfirst(X, s.x1)
         y = searchsortedfirst(Y, s.y)
@@ -75,10 +72,7 @@ function part2(X, Y, Z)
         grid[x:x1-1, y:y1-1, z:z1-1] .= (s.state == "on")
     end
     total = 0
-
-
     @inbounds @fastmath for x = 1:N-1, y = 1:N-1, z = 1:N-1
-
         if grid[x, y, z]
             total += ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
         end

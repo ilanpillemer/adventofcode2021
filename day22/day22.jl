@@ -1,8 +1,8 @@
 println("day22")
 
-X = []
-Y = []
-Z = []
+X = Int[]
+Y = Int[]
+Z = Int[]
 steps = []
 
 struct Step

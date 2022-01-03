@@ -74,7 +74,7 @@ function part2(X::Vector{Int64}, Y::Vector{Int64}, Z::Vector{Int64})
     total = 0
     @inbounds @fastmath for x = 1:N-1, y = 1:N-1, z = 1:N-1
         if grid[x, y, z]
-            total += grid[x, y, z] * ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
+            total += ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
         end
     end
     total

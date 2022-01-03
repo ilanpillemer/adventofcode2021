@@ -1,17 +1,17 @@
 println("day22")
 
-X = Int[]
-Y = Int[]
-Z = Int[]
+X = []
+Y = []
+Z = []
 steps = []
 
 struct Step
-    x::Int
-    x1::Int
-    y::Int
-    y1::Int
-    z::Int
-    z1::Int
+    x::Any
+    x1::Any
+    y::Any
+    y1::Any
+    z::Any
+    z1::Any
     state::Any
 end
 
@@ -56,34 +56,32 @@ end
 #include("example2.jl") # load data
 include("input.jl") # load data # answer should be 1125649856443608
 
-function part2(X::Int, Y::Int, Z::Int)
+function part2(X, Y, Z)
     sort!(X)
     sort!(Y)
     sort!(Z)
     N = length(X)
-    grid = falses(N, N, N)
+    grid = zeros(Bool, N, N, N)
+
     allsteps = length(steps)
-    i = 0
-    for s in steps
-        i = i + 1
-        if s.state == "on"
-            #println("processing step $i of $allsteps")
-            x = searchsortedfirst(X, s.x) + X[1] + 1
-            x1 = searchsortedfirst(X, s.x1) + X[1] + 1
-            y = searchsortedfirst(Y, s.y) + Y[1] + 1
-            y1 = searchsortedfirst(Y, s.y1) + Y[1] + 1
-            z = searchsortedfirst(Z, s.z) + Z[1] + 1
-            z1 = searchsortedfirst(Z, s.z1)ti + Z[1] + 1
-            grid[x:x1-1, y:y1-1, z:z1-1] .= true
+    for (i, s) in enumerate(steps)
+        #println("processing step $i of $allsteps")
+        x = findfirst(x -> x == s.x, X)
+        x1 = findfirst(x -> x == s.x1, X)
+        y = findfirst(x -> x == s.y, Y)
+        y1 = findfirst(x -> x == s.y1, Y)
+        z = findfirst(x -> x == s.z, Z)
+        z1 = findfirst(x -> x == s.z1, Z)
+        for i = x:x1-1, j = y:y1-1, k = z:z1-1
+            grid[i, j, k] = (s.state == "on")
         end
     end
-    #println(grid)
     total = 0
-
-    for xyz in eachindex(grid)
-        value = grid[xyz]
-        if value
-            total += ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
+    for x = 1:N-1, y = 1:N-1, z = 1:N-1
+        process = grid[x, y, z]
+        if process
+            cuboid_volume = ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
+            total = total + cuboid_volume
         end
     end
     total

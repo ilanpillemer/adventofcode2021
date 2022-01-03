@@ -56,7 +56,7 @@ end
 #include("example2.jl") # load data
 include("input.jl") # load data # answer should be 1125649856443608
 
-function part2(X, Y, Z)
+function part2(X::Vector{Int64}, Y::Vector{Int64}, Z::Vector{Int64})
     sort!(X)
     sort!(Y)
     sort!(Z)
@@ -74,7 +74,7 @@ function part2(X, Y, Z)
     total = 0
     @inbounds @fastmath for x = 1:N-1, y = 1:N-1, z = 1:N-1
         if grid[x, y, z]
-            total += ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
+            total += grid[x, y, z] * ((X[x+1] - X[x]) * (Y[y+1] - Y[y]) * (Z[z+1] - Z[z]))
         end
     end
     total

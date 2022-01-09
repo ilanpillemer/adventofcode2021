@@ -48,18 +48,19 @@ allplaces = [corridor; amber; bronze; copper; desert]
 
 mutable struct Amphipod
     kind::String
+    cost::Int
     pos::Vector{Int64}
 end
 
 # example initial state
-pod1 = Amphipod("B", amber[1, :])
-pod2 = Amphipod("A", amber[2, :])
-pod3 = Amphipod("C", bronze[1, :])
-pod4 = Amphipod("D", bronze[2, :])
-pod5 = Amphipod("B", copper[1, :])
-pod6 = Amphipod("C", copper[2, :])
-pod7 = Amphipod("D", desert[1, :])
-pod8 = Amphipod("A", desert[2, :])
+pod1 = Amphipod("B", 10, amber[1, :])
+pod2 = Amphipod("A", 1, amber[2, :])
+pod3 = Amphipod("C", 100, bronze[1, :])
+pod4 = Amphipod("D", 1000, bronze[2, :])
+pod5 = Amphipod("B", 10, copper[1, :])
+pod6 = Amphipod("C", 100, copper[2, :])
+pod7 = Amphipod("D", 1000, desert[1, :])
+pod8 = Amphipod("A", 1, desert[2, :])
 
 pods = [pod1; pod2; pod3; pod4; pod5; pod6; pod7; pod8]
 amhome(pod) = pod.pos in eachrow(home[pod.kind])
@@ -72,14 +73,9 @@ function allhome(pods)
     true
 end
 
-function moves(pod::Amphipod)
-    for a in eachrow(allplaces)
-        v = vec([a[1] a[2]])
-        if islegal(pod, v, pods)
-            println("$a is true for $pod")
-        end
-    end
-end
+nummoves(pod, move) = abs(pod.pos[1] - move[1]) + abs(pod.pos[2] - move[2])
+cost(pod, move) = nummoves(pod, move) * pod.cost
+
 
 function islegal(pod::Amphipod, move::Vector{Int64}, pods::Vector{Amphipod})
     # cant move to itself
@@ -156,4 +152,31 @@ function islegal(pod::Amphipod, move::Vector{Int64}, pods::Vector{Amphipod})
     return true
 end
 
-moves(pod1)
+function moves(pod::Amphipod)
+    mx = []
+    for a in eachrow(allplaces)
+        v = vec([a[1] a[2]])
+        if islegal(pod, v, pods)
+            println("$a is true for $pod")
+            push!(mx, (cost(pod, a), pod, a))
+        end
+    end
+    mx
+end
+mx = moves(pod1)
+
+function search(pods, total)
+    if allhome(pods)
+        println("home")
+        return total
+    end
+    options = []
+    for pod in pods
+        mx = moves(pod)
+        options = append!(options, mx)
+    end
+    sort!(options, by = first)
+
+end
+
+search(pods, 0)

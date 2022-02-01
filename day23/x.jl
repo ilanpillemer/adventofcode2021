@@ -56,6 +56,28 @@ cost[B.v] = 10
 cost[C.v] = 100
 cost[D.v] = 1000
 
+entry = fill(0, D.v)
+entry[A.v] = 3
+entry[B.v] = 5
+entry[C.v] = 7
+entry[D.v] = 9
+
+up = fill(0, 11 + 4 + 4)
+up[12] = 3
+up[13] = 5
+up[14] = 7
+up[15] = 9
+up[16] = 12
+up[17] = 13
+up[18] = 14
+up[19] = 15
+
+down = fill(0, 11 + 4 + 4)
+for (i, v) in enumerate(up)
+    if v != 0
+        down[v] = i
+    end
+end
 
 b = Board(exampleBoard())
 display(b)

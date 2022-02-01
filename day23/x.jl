@@ -5,10 +5,11 @@ struct Board
     b::Vector{Pod}
 end
 
-A = 2
-B = 3
-C = 4
-D = 5
+Empty = Pod(1)
+A = Pod(2)
+B = Pod(3)
+C = Pod(4)
+D = Pod(5)
 Names = [:. :A :B :C :D]
 EmptyBoard = """
 #############
@@ -28,15 +29,9 @@ function display(b::Board)
 end
 
 function exampleBoard()
-    board = fill(Pod(1), 11 + 4 + 4)
-    board[12] = Pod(B)
-    board[13] = Pod(C)
-    board[14] = Pod(B)
-    board[15] = Pod(D)
-    board[16] = Pod(A)
-    board[17] = Pod(D)
-    board[18] = Pod(C)
-    board[19] = Pod(A)
+    board = fill(Empty, 11 + 4 + 4)
+    board[12:15] = [B, C, B, D]
+    board[16:19] = [A, D, C, A]
     board
 end
 

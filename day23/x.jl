@@ -1,3 +1,4 @@
+# inspired by https://youtu.be/dMSqVAOW9Tw
 struct Pod
     v::Int8
 end

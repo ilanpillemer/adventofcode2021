@@ -35,5 +35,28 @@ function exampleBoard()
     board
 end
 
+function input()
+    board = fill(Empty, 11 + 4 + 4)
+    board[12:15] = [B, B, D, D]
+    board[16:19] = [C, A, A, C]
+    board
+end
+
+function win()
+    board = fill(Empty, 11 + 4 + 4)
+    board[12:15] = [A, B, C, D]
+    board[16:19] = [A, B, C, D]
+    board
+end
+
+
+cost = fill(0, D.v)
+cost[A.v] = 1
+cost[B.v] = 10
+cost[C.v] = 100
+cost[D.v] = 1000
+
+
 b = Board(exampleBoard())
 display(b)
+display(Board(input()))

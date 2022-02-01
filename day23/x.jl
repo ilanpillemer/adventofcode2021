@@ -80,6 +80,26 @@ for (i, v) in enumerate(up)
     end
 end
 
+
+function move(b::Board, c::Int, f)
+    for (i, p) in enumerate(b.b)
+        if p == Empty
+            continue
+        end
+
+        if i >= 12
+            # in a room
+            # should move up to hallway
+            d = 0
+
+        else
+            # in hallway
+        end
+    end
+end
+
 b = Board(exampleBoard())
 display(b)
 display(Board(input()))
+
+move(b, 0, println)

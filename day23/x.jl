@@ -36,6 +36,8 @@ function exampleBoard()
     board
 end
 
+
+
 function input()
     board = fill(Empty, 11 + 4 + 4)
     board[12:15] = [B, B, D, D]
@@ -117,9 +119,10 @@ function move(b::Board, c::Int, f)
                 b2 = deepcopy(b)
                 b2.b[i] = Empty
                 b2.b[j] = p
-                #f(b2)
+                println(c + (d + abs(e - j)) * cost[p.v])
+                f(b2)
             end
-            for j = e:11
+            for j = e+1:11
                 if b.b[j] != Empty
                     break # blocked no passage
                 end
@@ -130,16 +133,77 @@ function move(b::Board, c::Int, f)
                 b2 = deepcopy(b)
                 b2.b[i] = Empty
                 b2.b[j] = p
+                println(c + (d + abs(e - j)) * cost[p.v])
                 f(b2)
             end
 
         else
+            d = 0
             # in hallway
+            # if there is room in the corridor
+            e = entry[p.v]
+            # println("E", e)
+            # starting at entrance
+            j = e
+            j = down[j]
+            bottom = j
+            blocked = false
+            while j != 0
+                if b.b[j] != p && b.b[j] != Empty
+                    blocked = true
+                    break
+                end
+
+                j = down[j]
+
+                if j != 0
+                    if b.b[j] != Empty
+                        continue
+                    end
+                    bottom = j
+
+                end
+                d = d + 1
+            end
+            if blocked
+                # julia does not seem to have continue to a labelled for
+                continue
+            end
+            # so room is available, so lets go to the entrance
+            dx = 1
+            if i > e
+                dx = -1
+            end
+            for j = (i+dx):dx:e
+                # println(j)
+                if b.b[j] != Empty
+                    blocked = true
+                    break
+                end
+                d = d + 1
+            end
+            if blocked
+                continue
+            end
+            b2 = deepcopy(b)
+            b2.b[i] = Empty
+            b2.b[bottom] = p
+            println(c + (d * cost[p.v]))
+            f(b2)
         end
     end
 end
-
-b = Board(exampleBoard())
+function hallwayBoard()
+    board = fill(Empty, 11 + 4 + 4)
+    board[1] = A
+    board[2] = B
+    board[8] = B
+    board[11] = D
+    board[17] = C
+    #board[16] = A
+    board
+end
+b = Board(hallwayBoard())
 display(b)
 #display(Board(input()))
 

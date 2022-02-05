@@ -91,6 +91,47 @@ function move(b::Board, c::Int, f)
             # in a room
             # should move up to hallway
             d = 0
+            e = i
+            #can I go up?
+            blocked = false
+            while up[e] != 0
+                d = d + 1
+                e = up[e]
+                if b.b[e] != Empty
+                    blocked = true
+                end
+            end
+            if blocked
+                # julia does not seem to have continue to a labelled for
+                continue
+            end
+            #Left
+            for j = (e-1):-1:1
+                if b.b[j] != Empty
+                    break # blocked no passage
+                end
+                if down[j] != 0
+                    continue # cannot stop at an entrance
+                end
+                # at a legal position in the hallway
+                b2 = deepcopy(b)
+                b2.b[i] = Empty
+                b2.b[j] = p
+                #f(b2)
+            end
+            for j = e:11
+                if b.b[j] != Empty
+                    break # blocked no passage
+                end
+                if down[j] != 0
+                    continue # cannot stop at an entrance
+                end
+                # at a legal position in the hallway
+                b2 = deepcopy(b)
+                b2.b[i] = Empty
+                b2.b[j] = p
+                f(b2)
+            end
 
         else
             # in hallway
@@ -100,6 +141,6 @@ end
 
 b = Board(exampleBoard())
 display(b)
-display(Board(input()))
+#display(Board(input()))
 
-move(b, 0, println)
+move(b, 0, display)

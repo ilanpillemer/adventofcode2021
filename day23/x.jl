@@ -17,6 +17,8 @@ EmptyBoard = """
 #-----------#
 ###-#-#-#-###
   #-#-#-#-#
+  #-#-#-#-#
+  #-#-#-#-#
   #########
 """
 Base.show(io::IO, z::Pod) = print(io, Names[z.v])
@@ -30,25 +32,31 @@ function display(b::Board)
 end
 
 function exampleBoard()
-    board = fill(Empty, 11 + 4 + 4)
+    board = fill(Empty, 11 + 4 + 4 + 4 + 4)
     board[12:15] = [B, C, B, D]
-    board[16:19] = [A, D, C, A]
+    board[16:19] = [D, C, B, A]
+    board[20:23] = [D, B, A, C]
+    board[24:27] = [A, D, C, A]
     board
 end
 
 
 
 function input()
-    board = fill(Empty, 11 + 4 + 4)
+    board = fill(Empty, 11 + 4 + 4 + 4 + 4)
     board[12:15] = [B, B, D, D]
-    board[16:19] = [C, A, A, C]
+    board[16:19] = [D, C, B, A]
+    board[20:23] = [D, B, A, C]
+    board[24:27] = [C, A, A, C]
     board
 end
 
 function win()
-    board = fill(Empty, 11 + 4 + 4)
+    board = fill(Empty, 11 + 4 + 4 + 4 + 4)
     board[12:15] = [A, B, C, D]
     board[16:19] = [A, B, C, D]
+    board[20:23] = [A, B, C, D]
+    board[24:27] = [A, B, C, D]
     board
 end
 
@@ -65,17 +73,30 @@ entry[B.v] = 5
 entry[C.v] = 7
 entry[D.v] = 9
 
-up = fill(0, 11 + 4 + 4)
+up = fill(0, 11 + 4 + 4 + 4 + 4)
 up[12] = 3
 up[13] = 5
 up[14] = 7
 up[15] = 9
+
 up[16] = 12
 up[17] = 13
 up[18] = 14
 up[19] = 15
 
-down = fill(0, 11 + 4 + 4)
+up[20] = 16
+up[21] = 17
+up[22] = 18
+up[23] = 19
+
+up[24] = 20
+up[25] = 21
+up[26] = 22
+up[27] = 23
+
+
+
+down = fill(0, 11 + 4 + 4 + 4 + 4)
 for (i, v) in enumerate(up)
     if v != 0
         down[v] = i
@@ -102,6 +123,7 @@ function move(b::Board, c::Int, f)
                 if b.b[e] != Empty
                     blocked = true
                 end
+
             end
             if blocked
                 # julia does not seem to have continue to a labelled for
@@ -119,8 +141,8 @@ function move(b::Board, c::Int, f)
                 b2 = deepcopy(b)
                 b2.b[i] = Empty
                 b2.b[j] = p
-                println(c + (d + abs(e - j)) * cost[p.v])
-                f(b2)
+                #println(c + (d + abs(e - j)) * cost[p.v])
+                f(c + (d + abs(e - j)) * cost[p.v], b2)
             end
             for j = e+1:11
                 if b.b[j] != Empty
@@ -133,8 +155,8 @@ function move(b::Board, c::Int, f)
                 b2 = deepcopy(b)
                 b2.b[i] = Empty
                 b2.b[j] = p
-                println(c + (d + abs(e - j)) * cost[p.v])
-                f(b2)
+                #println()
+                f(c + (d + abs(e - j)) * cost[p.v], b2)
             end
 
         else
@@ -188,8 +210,8 @@ function move(b::Board, c::Int, f)
             b2 = deepcopy(b)
             b2.b[i] = Empty
             b2.b[bottom] = p
-            println(c + (d * cost[p.v]))
-            f(b2)
+            #println(c + (d * cost[p.v]))
+            f(c + (d * cost[p.v]), b2)
         end
     end
 end
@@ -200,11 +222,29 @@ function hallwayBoard()
     board[8] = B
     board[11] = D
     board[17] = C
-    #board[16] = A
     board
 end
-b = Board(hallwayBoard())
+b = Board(input())
 display(b)
-#display(Board(input()))
 
-move(b, 0, display)
+using DataStructures
+seen = Set()
+pq = PriorityQueue{Board,Int}()
+function f(c::Int, b::Board)
+    enqueue!(pq, b => c)
+end
+
+move(b, 0, f)
+for i = 1:10000000000
+    local (best, score) = peek(pq)
+    if best.b == win()
+        println(score)
+        break
+    end
+    dequeue!(pq)
+    if best.b in seen
+        continue
+    end
+    push!(seen, best.b)
+    move(best, score, f)
+end

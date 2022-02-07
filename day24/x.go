@@ -1,11 +1,25 @@
 //implemented based on solution described in youtube video by Russ Cox https://youtu.be/hmq6veCFo0Y
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	prog := compute()
+	opt(prog)
 	dump(prog)
+}
+
+func opt(prog []*val) {
+	//	for _, v := range prog {
+	//		switch {
+	//		case v.op == "*" && v.l.op == "num" && v.r.op == "num":
+	//			*v = val{op: "num", n: v.l.n * v.r.n, t: v.t}
+	//
+	//		}
+	//	}
+
 }
 
 func dump(prog []*val) {
@@ -14,25 +28,26 @@ func dump(prog []*val) {
 		count[v.l]++
 		count[v.r]++
 	}
+
 	str := make(map[*val]string)
 	for _, v := range prog {
-		x := ""
+		var x string
 		switch v.op {
 		// if its a constant print it out when it appears rather than its "single static assignment name"
 		// and dont print our its SSA
-		case "num":
-			x = v.Init()
-		case "inp": // if its an input print it out rather than its "single static assignment name"
+		case "inp", "num": // if its an input print it out rather than its "single static assignment name"
 			x = v.Init()
 		default:
 			//if it appears only once then print its assignment, rather than its single static assignment name
 			// and dont print our its SSA
-			x = fmt.Sprintf("%v %v %v", str[v.l], v.op, str[v.r])
+
+			x = fmt.Sprintf("(%v %v %v)", str[v.l], v.op, str[v.r])
 			if count[v] >= 2 {
 				//if it apears more than once then print out its SSA name, ands its assignment
 				fmt.Println(v.Name(), "=", x)
 				x = v.Name()
 			}
+
 		}
 		str[v] = x
 	}
@@ -92,7 +107,7 @@ func compute() []*val {
 	mul := func(l, r *val) *val { return bin(l, "*", r) }
 	div := func(l, r *val) *val { return bin(l, "/", r) }
 	mod := func(l, r *val) *val { return bin(l, "%", r) }
-	eql := func(l, r *val) *val { return bin(r, "==", r) }
+	eql := func(l, r *val) *val { return bin(l, "==", r) }
 	//	eql := func(l, r *val) *val {
 	//		if l == r {
 	//			return 1

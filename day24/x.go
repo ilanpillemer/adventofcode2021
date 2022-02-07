@@ -5,32 +5,75 @@ import "fmt"
 
 func main() {
 	prog := compute()
+	dump(prog)
+}
+
+func dump(prog []*val) {
+	count := make(map[*val]int)
 	for _, v := range prog {
-		println(v.String())
+		count[v.l]++
+		count[v.r]++
 	}
+	str := make(map[*val]string)
+	for _, v := range prog {
+		x := ""
+		switch v.op {
+		// if its a constant print it out when it appears rather than its "single static assignment name"
+		// and dont print our its SSA
+		case "num":
+			x = v.Init()
+		case "inp": // if its an input print it out rather than its "single static assignment name"
+			x = v.Init()
+		default:
+			//if it appears only once then print its assignment, rather than its single static assignment name
+			// and dont print our its SSA
+			x = fmt.Sprintf("%v %v %v", str[v.l], v.op, str[v.r])
+			if count[v] >= 2 {
+				//if it apears more than once then print out its SSA name, ands its assignment
+				fmt.Println(v.Name(), "=", x)
+				x = v.Name()
+			}
+		}
+		str[v] = x
+	}
+
+	fmt.Println(str[prog[len(prog)-1]])
 }
 
 type val struct {
+	t    int
 	op   string
 	n    int
 	l, r *val
 }
 
-func (v *val) String() string {
+func (v *val) Name() string {
+	// print the single static assignment's "name"
+	return fmt.Sprint("t", v.t)
+}
+
+func (v *val) Init() string {
+	// print what it was initially assigned in terms of SSA
 	switch v.op {
 	case "num":
 		return fmt.Sprint(v.n)
 	case "inp":
 		return fmt.Sprint("m", v.n)
 	default:
-		return fmt.Sprintf("(%v %v %v)", v.l, v.op, v.r)
+		return fmt.Sprintf("(%v %v %v)", v.l.Name(), v.op, v.r.Name())
 	}
+}
+
+func (v *val) String() string {
+	return fmt.Sprintf("(%v = %v)", v.Name(), v.Init())
 }
 
 func compute() []*val {
 	var prog []*val
-
+	t := 0
 	emit := func(v *val) *val {
+		t++
+		v.t = t
 		prog = append(prog, v)
 		return v
 	}
@@ -313,5 +356,6 @@ func compute() []*val {
 	y = add(y, num(9))
 	y = mul(y, x)
 	z = add(z, y)
+	_ = z
 	return prog
 }

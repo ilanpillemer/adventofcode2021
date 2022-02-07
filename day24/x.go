@@ -12,14 +12,16 @@ func main() {
 }
 
 func opt(prog []*val) {
-	//	for _, v := range prog {
-	//		switch {
-	//		case v.op == "*" && v.l.op == "num" && v.r.op == "num":
-	//			*v = val{op: "num", n: v.l.n * v.r.n, t: v.t}
-	//
-	//		}
-	//	}
-
+	for _, v := range prog {
+		switch {
+		case v.op == "*" && v.l.op == "num" && v.r.op == "num":
+			*v = val{op: "num", n: v.l.n * v.r.n, t: v.t}
+		case v.op == "+" && v.l.op == "num" && v.r.op == "num":
+			*v = val{op: "num", n: v.l.n + v.r.n, t: v.t}
+		case v.op == "%" && v.l.op == "num" && v.r.op == "num":
+			*v = val{op: "num", n: v.l.n % v.r.n, t: v.t}
+		}
+	}
 }
 
 func dump(prog []*val) {

@@ -18,8 +18,6 @@ func opt(prog []*val) {
 			*v = val{op: "num", n: v.l.n * v.r.n, t: v.t}
 		case v.op == "+" && v.l.op == "num" && v.r.op == "num":
 			*v = val{op: "num", n: v.l.n + v.r.n, t: v.t}
-		case v.op == "%" && v.l.op == "num" && v.r.op == "num":
-			*v = val{op: "num", n: v.l.n % v.r.n, t: v.t}
 		}
 	}
 }
